@@ -1,6 +1,8 @@
 import os, sys
 import csv
 
+import information_gain
+
 path = os.getcwd()
 data_path = os.path.join(path, 'Data')
 
