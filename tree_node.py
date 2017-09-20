@@ -12,7 +12,7 @@ class tree_node:
         self.dataset = dataset 
 
     def set_attributes(self, attributes):
-        # is this going to be a list or a dict?
+        # TODO: is this going to be a list or a dict?
         if isinstance(attributes, dict):
             self.attributes = attributes.keys()
         else:
