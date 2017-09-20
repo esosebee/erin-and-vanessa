@@ -1,28 +1,27 @@
 import numpy as np 
 import math 
 
-def find_values_of_attribute(listofdictionaries, attribute):
+def find_values_of_attribute(training_set, key):
     # Throw all values of the given attribute in basket
     basket = set()
     print('attribute is ', attribute)
-    for item in listofdictionaries:
-        # print(item[attribute])
+    for item in training_set:
         if type(item[attribute]) is dict:
-            for key in item[attribute].keys():
-                basket.add(item[attribute][key])
+            for k in item[key].keys():
+                basket.add(item[key][k])
         else: 
-            basket.add(item[attribute])
+            basket.add(item[key])
     return basket
 
-def find_unique_vals(listofdictionaries, attribute):
+def find_unique_vals(training_set, key):
     allvals = []
-    for item in listofdictionaries:
-        if attribute in item: 
+    for item in training_set:
+        if key in item: 
             # Attributes with dictionaries as values need to be parsed
             # in this way
-            if type(item[attribute]) is dict:
-                for key in item[attribute].keys():
-                    allvals.append(key)
+            if type(item[key]) is dict:
+                for k in item[key].keys():
+                    allvals.append(k)
             else: 
                 allvals.append(item[attribute])
         else:
@@ -34,10 +33,10 @@ def find_unique_vals(listofdictionaries, attribute):
         basket.add(item)
     return basket
 
-def entropy(listofdictionaries, attribute):
+def entropy(training_set, key):
     allvals = []
-    for item in listofdictionaries:
-        allvals.append(item[attribute])
+    for item in training_set:
+        allvals.append(item[key])
 
     # Find all unique value in allvals and throw them in basket. 
     basket = set()
@@ -64,27 +63,27 @@ def entropy(listofdictionaries, attribute):
     e = -1*e 
     return e
 
-    def sliceOfData(listofdictionaries, attribute, value):
+    def sliceOfData(training_set, key, value):
         ''' Construct a list of all dictionaries from listofdictionaries for which
         attribute has the specified value. '''
         datalist = []
         for item in listofdictionaries:
-            if item[attribute] == value:
+            if item[key] == value:
                 datalist.append(item)
         return datalist
 
 
-    def gain(listofdictionaries, feature):
+    def gain(training_set, feature):
         # Compute the entropy of the entire data set using the values of the
         # target function, a.k.a. boundry. 
-        e = entropy(listofdictionaries, 'boundary')
+        e = entropy(training_set, 'boundary')
         # Find all values of the feature "feature".
-        values = finduniquevalues(listofdictionaries, feature)
+        values = find_unique_vals(training_set, feature)
 
         gain = 0
         for v in valus:
-            sv = sliceOfData(listofdictionaries, feature, v)
+            sv = sliceOfData(training_set, feature, v)
             gain =gain + size(sv) * entropy(sv, 'boundary')
 
-        gain = e - (1/size(listofdictionaries) * gain)
+        gain = e - (1/size(training_set) * gain)
         return gain
