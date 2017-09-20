@@ -1,5 +1,6 @@
 import get_data
 import information_gain
+import build_decision_tree
 
 DEBUG = True 
 
@@ -15,16 +16,15 @@ if __name__ == '__main__':
         training_attributes.append(get_data.get_attributes(t))
     
     if DEBUG:
-        print 'What the keys are: ', training_attributes[1].keys()
-        for v in training_attributes[1].keys():
-            # information_gain.find_unique_vals(training_attributes, v)
-            print('values', information_gain.finduniquevals(training_attributes, v))
+        # print 'What the keys are: ', training_attributes[1].keys()
+        # for v in training_attributes[1].keys():
+        #     # information_gain.find_unique_vals(training_attributes, v)
+        #     print('values', information_gain.find_unique_vals(training_attributes, v))
 
-
+        build_decision_tree.default_attribute(training_data, training_attributes)
 
     # test_data = ['1995', 'GCTGAGGCCTGGCTCTCTCCCTCCCCACAGGGTGCCCGGTACGTGTGGAACCGCACTGAG', 'IE']
     # attributes = get_attributes(test_data)
-    # print attributes
 
 
 

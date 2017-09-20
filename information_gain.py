@@ -10,7 +10,7 @@ def findValuesOfAttribute(listofdictionaries, attribute):
         basket.add(item[attribute])
     return basket
 
-def finduniquevals(listofdictionaries, attribute):
+def find_unique_vals(listofdictionaries, attribute):
     allvals = []
     for item in listofdictionaries:
         if attribute in item: 
