@@ -1,6 +1,8 @@
 import get_data
 import information_gain
 
+DEBUG = True 
+
 if __name__ == '__main__':
     training_filename = 'training.csv'
     testing_filename = 'testing.csv'
@@ -12,10 +14,13 @@ if __name__ == '__main__':
     for t in training_data:
         training_attributes.append(get_data.get_attributes(t))
     
-    print 'What the keys are: ', training_attributes[1].keys()
-    for v in training_attributes[1].keys():
-        print('key', v)
-        print('values', information_gain.finduniquevals(training_attributes, v))
+    if DEBUG:
+        print 'What the keys are: ', training_attributes[1].keys()
+        for v in training_attributes[1].keys():
+            information_gain.finduniquevals(training_attributes, v)
+            print('values', information_gain.finduniquevals(training_attributes, v))
+
+
 
     # test_data = ['1995', 'GCTGAGGCCTGGCTCTCTCCCTCCCCACAGGGTGCCCGGTACGTGTGGAACCGCACTGAG', 'IE']
     # attributes = get_attributes(test_data)

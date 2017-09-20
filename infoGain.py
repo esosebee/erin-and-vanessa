@@ -31,7 +31,6 @@ Returns: entropy.
 set of values. '''
 
 def finduniquevals(listofdictionaries, attribute):
-
     allvals = []
     for item in listofdictionaries:
         if attribute in item: 
@@ -43,7 +42,7 @@ def finduniquevals(listofdictionaries, attribute):
     basket = set()
     for item in allvals:
         basket.add(item)
-
+    print basket
     return(basket)
 
 
