@@ -15,9 +15,17 @@ def get_letters_index(sequence, i_range, n):
     '''
     Gets n amount of characters from each index.
     '''
+    if n == 1:
+        key = 'letter'
+    elif n == 2:
+        key = 'pair'
+    elif n == 3:
+        key = 'triple'
+
     index_dict = {}
     for i in range(0, len(sequence)-(n-1)):
-        index_dict[i] = sequence[i:i+n]
+        label = key + str(i)
+        index_dict[label] = sequence[i:i+n]
     return index_dict
 
 def get_attributes(data):
@@ -32,9 +40,9 @@ def get_attributes(data):
     attributes['id'] = seq_id
     attributes['sequence'] = sequence
     attributes['boundary'] = boundary
-    attributes['letter_index'] = get_letters_index(sequence, range(0, len(sequence)), 1)
-    attributes['pair_index'] = get_letters_index(sequence, range(0, len(sequence)), 2)
-    attributes['triple_index'] = get_letters_index(sequence, range(0, len(sequence)), 3)
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 #############
