@@ -26,7 +26,8 @@ def main():
 
     print ("What the keys are: ", training_attributes[1].keys())
 
-                                                         
+    # print training_attributes[1]
+                                                           
     for v in  training_attributes[1].keys():
         print("key", v)
         print("values", infoGain.finduniquevals(training_attributes, v))

@@ -8,6 +8,7 @@ data_path = os.path.join(path, 'Data')
 # Get attributes from DNA sequence #
 ####################################
 def split_sequence_in_half(sequence):
+    ''' Splits a DNA sequence perfectly in half. '''
     return sequence[:len(sequence)/2], sequence[len(sequence)/2:]
 
 def get_letters_index(sequence, i_range, n):
@@ -20,17 +21,29 @@ def get_letters_index(sequence, i_range, n):
     return index_dict
 
 def get_attributes(data):
-    attributes_list = []
-    sequence = data[1]
-    letter_index_dict = get_letters_index(sequence, range(0, len(sequence)), 1)
-    pair_index_dict = get_letters_index(sequence, range(0, len(sequence)), 2)
-    triple_index_dict = get_letters_index(sequence, range(0, len(sequence)), 3)
+    '''
+    Gets the desired attributes to be tested on from the data.
+    '''
+    seq_id = data[0] 
+    sequence = data[1] 
+    boundary = data[2]
+
+    attributes = {}
+    attributes['id'] = seq_id
+    attributes['sequence'] = sequence
+    attributes['boundary'] = boundary
+    attributes['letter_index'] = get_letters_index(sequence, range(0, len(sequence)), 1)
+    attributes['pair_index'] = get_letters_index(sequence, range(0, len(sequence)), 2)
+    attributes['triple_index'] = get_letters_index(sequence, range(0, len(sequence)), 3)
     return attributes
 
 #############
 # Load data #
 #############
 def load_dataset(filename):
+    '''
+    Loads dataset from CSV file into a list.
+    '''
     filepath = os.path.join(data_path, filename)
     with open(filepath) as f:
         reader = csv.reader(f)

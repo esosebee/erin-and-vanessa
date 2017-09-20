@@ -6,7 +6,7 @@ def findValuesOfAttribute(listofdictionaries, attribute):
     print('attribute is ', attribute)
     for item in listofdictionaries:
         print(item[attribute])
-        baskt.add(item[attribute])
+        basket.add(item[attribute])
     return basket
 
 def finduniquevals(listofdictionaries, attribute):
@@ -21,7 +21,7 @@ def finduniquevals(listofdictionaries, attribute):
     for item in allvals:
         basket.add(item)
 
-    return basket
+    return(basket)
 
 def entropy(listofdictionaries, attribute):
     allvals = []
