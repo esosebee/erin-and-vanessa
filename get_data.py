@@ -20,11 +20,11 @@ def get_letters_index(sequence, i_range, n):
     return index_dict
 
 def get_attributes(data):
+    attributes_list = []
     sequence = data[1]
-    attributes = {}
-    attributes['letter_at_index'] = get_letters_index(sequence, range(0, len(sequence)), 1)
-    attributes['pair_at_index'] = get_letters_index(sequence, range(0, len(sequence)), 2)
-    attributes['triple_at_index'] = get_letters_index(sequence, range(0, len(sequence)), 3)
+    letter_index_dict = get_letters_index(sequence, range(0, len(sequence)), 1)
+    pair_index_dict = get_letters_index(sequence, range(0, len(sequence)), 2)
+    triple_index_dict = get_letters_index(sequence, range(0, len(sequence)), 3)
     return attributes
 
 #############
