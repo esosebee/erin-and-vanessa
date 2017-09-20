@@ -28,7 +28,6 @@ def finduniquevals(listofdictionaries, attribute):
     basket = set()
     for item in allvals:
         basket.add(item)
-    
     return basket
 
 def entropy(listofdictionaries, attribute):

@@ -17,7 +17,7 @@ if __name__ == '__main__':
     if DEBUG:
         print 'What the keys are: ', training_attributes[1].keys()
         for v in training_attributes[1].keys():
-            information_gain.finduniquevals(training_attributes, v)
+            # information_gain.find_unique_vals(training_attributes, v)
             print('values', information_gain.finduniquevals(training_attributes, v))
 
 
