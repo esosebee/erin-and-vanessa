@@ -17,11 +17,13 @@ if __name__ == '__main__':
     
     if DEBUG:
         # print 'What the keys are: ', training_attributes[1].keys()
-        # for v in training_attributes[1].keys():
-        #     # information_gain.find_unique_vals(training_attributes, v)
-        #     print('values', information_gain.find_unique_vals(training_attributes, v))
+        for v in training_attributes[1].keys():
+            # information_gain.find_unique_vals(training_attributes, v)
+            # print('values', information_gain.find_unique_vals(training_attributes, v))
+            information_gain.find_values_of_attribute(training_attributes, v)
 
-        build_decision_tree.default_attribute(training_data, training_attributes)
+        # build_decision_tree.default_attribute(training_data, training_attributes)
+
 
     # test_data = ['1995', 'GCTGAGGCCTGGCTCTCTCCCTCCCCACAGGGTGCCCGGTACGTGTGGAACCGCACTGAG', 'IE']
     # attributes = get_attributes(test_data)

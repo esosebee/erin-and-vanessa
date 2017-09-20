@@ -1,13 +1,17 @@
 import numpy as np 
 import math 
 
-def findValuesOfAttribute(listofdictionaries, attribute):
+def find_values_of_attribute(listofdictionaries, attribute):
     # Throw all values of the given attribute in basket
     basket = set()
     print('attribute is ', attribute)
     for item in listofdictionaries:
-        print(item[attribute])
-        basket.add(item[attribute])
+        # print(item[attribute])
+        if type(item[attribute]) is dict:
+            for key in item[attribute].keys():
+                basket.add(item[attribute][key])
+        else: 
+            basket.add(item[attribute])
     return basket
 
 def find_unique_vals(listofdictionaries, attribute):
@@ -65,7 +69,7 @@ def entropy(listofdictionaries, attribute):
         attribute has the specified value. '''
         datalist = []
         for item in listofdictionaries:
-            if item[attribute] == valu:
+            if item[attribute] == value:
                 datalist.append(item)
         return datalist
 
