@@ -27,13 +27,6 @@ if __name__ == '__main__':
         test_attributes = training_attributes_list[0:10]
         labels = list(infogain.find_values_of_attribute(test_attributes, target_attr))
         tree = Tree(test_attributes, target_attr, labels, None, None, None, 0)
-        # dtree.build_tree(test_attributes, 'boundary', labels, 0)
-        # print len(training_data)
-        # print len(training_attributes)
-        # for key in training_attributes[1].keys():
-            # print 'key', key
-            # print 'attribute values', infogain.find_values_of_attribute(training_attributes, key)
-            # print('unique values', infogain.find_unique_values(training_attributes, key))
 
     # test_data = ['1995', 'GCTGAGGCCTGGCTCTCTCCCTCCCCACAGGGTGCCCGGTACGTGTGGAACCGCACTGAG', 'IE']
     # attributes = get_attributes(test_data)
