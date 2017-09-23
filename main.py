@@ -1,8 +1,13 @@
 import get_data
 import information_gain as infogain
-import build_decision_tree as dtree 
+# import build_decision_tree as dtree 
+from build_tree import Tree
 
 DEBUG = True
+
+def get_initial_tree_values(training_set, target_attr, labels, depth):
+    attribute_keys = training_set[0].keys()
+    d
 
 if __name__ == '__main__':
     training_filename = 'training.csv'
@@ -15,12 +20,14 @@ if __name__ == '__main__':
     for t in training_data:
         training_attributes_list.append(get_data.get_attributes(t))
 
+    target_attr = 'boundary'
 
     if DEBUG:
         test_data = training_data[0:10]
         test_attributes = training_attributes_list[0:10]
-        labels = list(infogain.find_values_of_attribute(test_attributes, 'boundary'))
-        dtree.build_tree(test_attributes, 'boundary', labels, 0)
+        labels = list(infogain.find_values_of_attribute(test_attributes, target_attr))
+        tree = Tree(test_attributes, target_attr, labels, None, None, None, 0)
+        # dtree.build_tree(test_attributes, 'boundary', labels, 0)
         # print len(training_data)
         # print len(training_attributes)
         # for key in training_attributes[1].keys():

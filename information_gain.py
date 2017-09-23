@@ -53,6 +53,40 @@ def compute_probabilities(training_set, key):
 
     return probs
 
+def get_default_attribute(training_set):
+    ''' 
+    Gets the value of the most common attribute in the dataset. 
+    '''
+    freq_dict = {}
+    # Counts the number of occurrences for each value that appears in training_set
+    for t in training_set:
+        for key in t:
+            val = t[key]
+            if val in freq_dict:
+                freq_dict[val] += 1
+            else:
+                freq_dict[val] = 1
+    
+    # Returns the attribute value that occurred the most
+    return max(freq_dict, key=freq_dict.get)
+
+
+def flatten_list(lists):
+    ''' Flattens a multidimensonal list into a one-dimensional list. '''
+    return [item for sublist in lists for item in sublist]
+
+def remove_attribute_from_list(dataset, attribute):
+    '''
+    Removes the given attribute from the dataset.
+    '''
+    new_dataset = dataset
+    for i in range(0, len(dataset)):
+        for key in dataset[i]:
+            if dataset[i][key] == attribute:
+                d = dict(dataset[i])
+                del d[key]
+                new_dataset[i] = d 
+    return new_dataset
 
 '''
 See this article about gini impurity
