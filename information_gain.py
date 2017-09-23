@@ -1,89 +1,174 @@
-import numpy as np 
+import numpy as np
 import math 
 
+DEBUG = True
+
 def find_values_of_attribute(training_set, key):
-    # Throw all values of the given attribute in basket
-    basket = set()
-    print('attribute is ', attribute)
+    # Going to throw all the values of the given attribute in basket.
+    basket = set()  
     for item in training_set:
-        if type(item[attribute]) is dict:
-            for k in item[key].keys():
-                basket.add(item[key][k])
-        else: 
-            basket.add(item[key])
+        basket.add(item[key])
     return basket
 
-def find_unique_vals(training_set, key):
+def find_unique_values(training_set, key):
+
     allvals = []
     for item in training_set:
         if key in item: 
-            # Attributes with dictionaries as values need to be parsed
-            # in this way
-            if type(item[key]) is dict:
-                for k in item[key].keys():
-                    allvals.append(k)
-            else: 
-                allvals.append(item[attribute])
-        else:
-            print("attribute", attribute, "not found in data item")
+            allvals.append(item[key])
+        # else:
+        #     if DEBUG:
+        #         print ("attribute", key, "not found in data item")
 
     # Find all unique value in allvals and throw them in basket. 
     basket = set()
     for item in allvals:
         basket.add(item)
-    return basket
 
-def entropy(training_set, key):
+    return list(basket)
+
+def compute_probabilities(training_set, key):
+    ''' Create a list allvals of all instances of attribute.  For instance, if
+    IE occurs 50 times in our data set, the value 'IE' will appear 50 times
+    in the list allvals.'''
+
     allvals = []
     for item in training_set:
         allvals.append(item[key])
 
-    # Find all unique value in allvals and throw them in basket. 
+    '''Find all unique value in allvals and throw them in basket. '''
     basket = set()
     for item in allvals:
-        basket.add(item)
+        basket.add(item) 
 
     # Now compute the probability of each item in basket.
     counts = []
     for item in basket:
         counts.append(allvals.count(item))
-
-    n = sum(counts)
-    print("n is ", n)
+    
+    n = float(sum(counts))
     probs = []
     for count in counts:
         probs.append(count/n)
-        print("probability: ", count/n)
 
-    # Using the probabilities, compute the entropy e.
+    return probs
+
+
+'''
+See this article about gini impurity
+https://github.com/rasbt/python-machine-learning-book/blob/master/faq/decision-tree-binary.md
+'''
+
+'''
+def gini_impurity(listofdictionaires, attribute):
+
+    probs = compute_probabilities(training_set, attribute)
+    gini = 0
+    for p in probs:
+        gini = gini + p*p
+    gini = 1 - gini
+    return gini
+    
+'''
+
+
+''' Given a list of dictionaries and an attribute to compute the entropy
+with respect to, compute the experimental probabilities of each value of the
+attribute and then compute the entropy based on this. 
+
+Think of the list of dictionaries as an enhanced set of data elements.   Each
+element (dictionary) is one record of the data set.
+
+Returns: entropy.   
+'''
+
+def entropy(training_set, key):
+
+    ''' Create a list allvals of all instances of attribute.  For instance, if
+    IE occurs 50 times in our data set, the value 'IE' will appear 50 times
+    in the list allvals.'''
+
+    # Find the experimental probability of each value of the given attribute in
+    # the data set listofdictionaires. Using the probabilities, compute the entropy e.
+    probs = compute_probabilities(training_set, key)
     e = 0
     for prob in probs:
-        print("Probability and log", prob, math.log(prob, 2))
-        e = e + prob*math.log(prob, 2)
-    e = -1*e 
+        e = e + prob * math.log(prob,2)
+    e = -1*e
     return e
 
-    def sliceOfData(training_set, key, value):
-        ''' Construct a list of all dictionaries from listofdictionaries for which
-        attribute has the specified value. '''
-        datalist = []
-        for item in listofdictionaries:
-            if item[key] == value:
-                datalist.append(item)
-        return datalist
+def slice_of_data(training_set, key, value):
 
+    ''' Construct a list of all dictionaries from training_set for which
+    attribute has the specified value. '''
+    datalist = []
+    for item in training_set:
+        if item[key] == value:
+            datalist.append(item)
+    return datalist
 
-    def gain(training_set, feature):
-        # Compute the entropy of the entire data set using the values of the
-        # target function, a.k.a. boundry. 
-        e = entropy(training_set, 'boundary')
-        # Find all values of the feature "feature".
-        values = find_unique_vals(training_set, feature)
+def split_dataset(training_set, value):
+    new_dataset = []
+    for t in training_set:
+        print t
 
-        gain = 0
-        for v in valus:
-            sv = sliceOfData(training_set, feature, v)
-            gain =gain + size(sv) * entropy(sv, 'boundary')
+def gain(training_set, feature, target_feature):
+    ''' Given a data set training_set and a set of features, step through
+    the features to find the best information gain spliting on that feature.
+    Return the feature and the information gain.'''
 
-        gain = e - (1/size(training_set) * gain)
-        return gain
+    # Compute the entropy of the entire data set using the values of the
+    # target function, a.k.a. boundary. 
+    e = entropy(training_set, target_feature)
+    # Find all values of the feature "feature".
+    values = find_unique_values(training_set, feature);
+
+    gain = 0
+    for v in values:
+        sv = slice_of_data(training_set, feature, v)
+        gain = gain + len(sv) * entropy(sv, 'boundary')
+
+    gain = e - (1/len(training_set) * gain)
+    return gain
+
+def select_attribute(training_set, features, target_feature):
+    '''
+    Chooses which attribute to split on by choosing the 
+    attribute with the highest information gain.
+    '''
+
+    ''' We're in trouble if the set attributes is empty.'''
+    ''' SHOULD PUT IN AN ASSERT HERE'''
+    max_gain = 0.0
+    best_feature = ''
+
+    for f in features:
+        f_gain = gain(training_set, f, target_feature)
+        if f_gain > max_gain:
+            max_gain = f_gain 
+            best_feature = f 
+    return best_feature 
+
+def main():
+    print("Information gain of little data set")
+
+    item1 = {'grade': 'steep', 'bumpiness':  'bumpy', 'speedlimit': 'yes', 'boundary': 'slow'}
+    item2 = {'grade': 'steep', 'bumpiness':  'smooth', 'speedlimit': 'yes', 'boundary': 'slow'}
+    item3 = {'grade': 'flat', 'bumpiness':  'bumpy', 'speedlimit': 'no', 'boundary': 'fast'}
+    item4 = {'grade': 'steep', 'bumpiness':  'smooth', 'speedlimit': 'no', 'boundary': 'fast'}
+
+    data_set = [item1, item2, item3, item4]
+
+    print('entropy of data_set is', entropy(data_set, 'boundary'))
+    
+    gain_result = gain(data_set, 'grade', 'boundary')
+    print (gain_result)
+    print(select_attribute(data_set, {'grade', 'bumpy', 'speedlimit'}, 'boundary'))    
+
+if __name__ == '__main__':
+    main()
+
+           
+
+    
+    

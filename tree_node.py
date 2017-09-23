@@ -1,23 +1,31 @@
 class tree_node:
-    dataset = ''
-    attributes = []
-    children = {}
+    attribute_value = None # The attribute being tested on
+    dataset = None # The dataset that was tested for this node
+    children = None # A list of this node's child nodes
+    depth = None # The depth of the node in the tree
 
-    def __init__(self, dataset, attributes, children):
-        self.set_dataset(dataset)
-        self.set_attributes(attributes)
-        self.set_children(children)
+    def __init__(self, attribute_value, dataset, children, depth):
+        self.attribute_value = set_attribute_value(attribute_value)
+        self.label = set_label(label)
+        self.dataset = set_dataset(dataset)
+        self.children = set_children(children)
+        self.parent = set_parent(parent)
+        self.depth = set_level(depth)
 
-    def set_dataset(self, dataset):
-        self.dataset = dataset 
+    def set_attribute_value(attribute_value):
+        if attribute_value is not None:
+            self.attribute_value = attribute_value 
 
-    def set_attributes(self, attributes):
-        # TODO: is this going to be a list or a dict?
-        if isinstance(attributes, dict):
-            self.attributes = attributes.keys()
+    def set_dataset(dataset):
+        if dataset is not None:
+            self.dataset = dataset 
+
+    def set_children(children):
+        if children is not None:
+            self.children = children 
+
+    def set_depth(depth):
+        if depth == 0:
+            self.depth = depth + 1
         else:
-            self.attributes = attributes 
-
-    def set_children(self, children):
-        if isinstance(attributes, dict):
-            self.children = children.keys()
+            self.depth = depth

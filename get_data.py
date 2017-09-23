@@ -23,9 +23,11 @@ def get_letters_index(sequence, i_range, n):
         key = 'triple'
 
     index_dict = {}
-    for i in range(0, len(sequence)-(n-1)):
+    i = 0
+    while i < len(sequence)-(n-1):
         label = key + str(i)
-        index_dict[label] = sequence[i:i+n]
+        index_dict[label] = (sequence[i:i+n], i)
+        i += n
     return index_dict
 
 def get_attributes(data):
