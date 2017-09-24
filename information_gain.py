@@ -53,7 +53,7 @@ def compute_probabilities(training_set, key):
 
     return probs
 
-def get_default_attribute(training_set):
+def get_default_prediction(training_set, target_attr):
     ''' 
     Gets the value of the most common attribute in the dataset. 
     '''
@@ -61,12 +61,13 @@ def get_default_attribute(training_set):
     # Counts the number of occurrences for each value that appears in training_set
     for t in training_set:
         for key in t:
-            val = t[key]
-            if val in freq_dict:
-                freq_dict[val] += 1
-            else:
-                freq_dict[val] = 1
-    
+            if key == target_attr:
+                val = t[key]
+                if val in freq_dict:
+                    freq_dict[val] += 1
+                else:
+                    freq_dict[val] = 1
+
     # Returns the attribute value that occurred the most
     return max(freq_dict, key=freq_dict.get)
 
