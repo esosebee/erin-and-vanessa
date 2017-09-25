@@ -29,6 +29,11 @@ class Tree:
         '''
         Recursively build the decision tree.
         '''
+
+        # If no more data, then stop recursing
+        if len(dataset) == 0:
+            return 
+
         default_prediction = infogain.get_default_prediction(dataset, target_attr) # Get default feature
         if len(dataset[0]) == 1 or target_attr not in dataset[0]: # Stop splitting, there are no more features
             # Get decision 
@@ -47,12 +52,15 @@ class Tree:
 
         # Remove selected feature from dataset for children nodes 
         child_dataset = infogain.remove_attribute_from_list(dataset, self.node_feature)
+
+        # Remove selected feature from unique values
+        child_unique_values = [x for x in unique_values if x != self.node_feature]
         
         # Begin recursing for children 
         self.children = []
         for value in unique_values:
             child_labels = labels[:] # TODO: figure out how to split labels
-            self.children.append(Tree(child_dataset, target_attr, child_labels, value, None, self, None, depth+1))
+            self.children.append(Tree(infogain.split_dataset(dataset, value), target_attr, child_labels, value, None, self, None, depth+1))
 
 
 

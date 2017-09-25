@@ -143,9 +143,16 @@ def slice_of_data(training_set, key, value):
     return datalist
 
 def split_dataset(training_set, value):
+    '''
+    Constructs a new dataset consisting only of attributes with a specific value.
+    '''
     new_dataset = []
-    for t in training_set:
-        print t
+    for item in training_set:
+        for key in item:
+            if item[key] == value:
+                new_dataset.append(item)
+    return new_dataset
+
 
 def gain(training_set, feature, target_feature):
     ''' Given a data set training_set and a set of features, step through
