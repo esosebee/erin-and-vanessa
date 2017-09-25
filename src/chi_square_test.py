@@ -13,7 +13,7 @@ def get_attribute_frequencies(dataset):
 def get_expected_values(attr_freqs, total_attrs):
     expected_vals_dict = {}
     for item in attr_freqs:
-        expected_vals_dict[item] = float(attr_freqs[item]) / total_attrs
+        expected_vals_dict[item] = attr_freqs[item] * (float(attr_freqs[item]) / total_attrs)
     return expected_vals_dict
 
 def observed_expected_diff_squared(attr_freqs, expected_values):
@@ -49,5 +49,6 @@ def chi_square_test(dataset, target_attr): # Need an alpha value?
         chi_squared_stat += chi_square_values[attr]
     
     # Get critical values
-    max_pvalue = 1.0
+    
+    # return 1.0 - pvalue
 
