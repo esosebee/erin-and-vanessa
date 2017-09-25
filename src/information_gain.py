@@ -140,6 +140,7 @@ def slice_of_data(training_set, key, value):
     for item in training_set:
         if item[key] == value:
             datalist.append(item)
+    # print 'slice_of_data length: ', len(datalist)
     return datalist
 
 def split_dataset(training_set, value):

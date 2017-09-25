@@ -20,11 +20,12 @@ if __name__ == '__main__':
 
     # Test on partition of data
     if DEBUG:
-        test_data = training_data[0:10]
-        test_attributes = training_attributes_list[0:10]
-        # labels = list(infogain.find_values_of_attribute(test_attributes, target_attr))
-        # tree = Tree(test_attributes, target_attr, labels, None, None, None, None, 0)
-        chi.chi_square_test(test_attributes, target_attr)
+        test_data = training_data
+        test_attributes = training_attributes_list
+        attribute_keys = test_attributes[0].keys()
+        labels = list(infogain.find_values_of_attribute(test_attributes, target_attr))
+        tree = Tree(test_attributes, attribute_keys, target_attr, labels, None, None, None, None, 0)
+        # chi.chi_square_test(test_attributes, target_attr, labels, 0.05)
 
     # test_data = ['1995', 'GCTGAGGCCTGGCTCTCTCCCTCCCCACAGGGTGCCCGGTACGTGTGGAACCGCACTGAG', 'IE']
     # attributes = get_attributes(test_data)
