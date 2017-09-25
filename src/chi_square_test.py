@@ -29,21 +29,25 @@ def get_chi_square_values(diffs_squared, expected_values):
     for key in keys:
         # print 'diffs squared: ', diffs_squared[key]
         # print 'expected values: ', expected_values[key]
-        chi_dict[key] = float(diffs_squared[key]) / expected_values[key]
-    print chi_dict
+        chi_dict[key] = diffs_squared[key] / expected_values[key]
     return chi_dict
 
 def chi_square_test(dataset, target_attr): # Need an alpha value?
     # TODO: Do we test on target attributes (boundary) or all attributes
     # that are used as predictors?
 
-    # Get frequency of each attribute
-    attr_freqs = get_attribute_frequencies(dataset)    
-    # Get expected values for each attribute 
-    expected_values = get_expected_values(attr_freqs, len(dataset[0]))
-    # Get squared differences between observed frequencies and expected values
-    diffs_squared = observed_expected_diff_squared(attr_freqs, expected_values)
-    # Get chi-squared values
-    chi_square_values = get_chi_square_values(diffs_squared, expected_values)
-
+    # Build contingency table
+    attr_freqs = get_attribute_frequencies(dataset) # Get frequency of each attribute
+    expected_values = get_expected_values(attr_freqs, len(dataset[0])) # Get expected values for each attribute 
+    diffs_squared = observed_expected_diff_squared(attr_freqs, expected_values) # Get squared differences between observed frequencies and expected values
+    chi_square_values = get_chi_square_values(diffs_squared, expected_values) # Get chi-squared values
+    attrs = chi_square_values.keys()
+    
+    # Get chi-squared statistic
+    chi_squared_stat = 0.0
+    for attr in attrs:
+        chi_squared_stat += chi_square_values[attr]
+    
+    # Get critical values
     max_pvalue = 1.0
+
