@@ -4,21 +4,25 @@ from build_tree import Tree
 
 import chi_square_test as chi 
 
-DEBUG = True
+DEBUG = False
 
 def print_tree(tree, indent):
+    '''
+    Prints string to console for debugging purposes.
+    '''
     indentation = indent * ' '
-    child_indentation = (indent + 2) * ' '
+    decision_indentation = (indent+2) * ' '
     if tree.is_leaf == False:
-        print indentation + 'Parent: ' + str(tree.node_feature)
+        print indentation + 'Feature: ' + str(tree.node_feature)
+        print indentation + 'Value: ' + str(tree.node_feature_value)
         for child in tree.children:
-            if child.is_leaf == False:
-                print child_indentation + 'Child: ' + str(child.node_feature)
-                print_tree(child, indent+2)
-            else:
-                print child_indentation + 'Decision parent: ' + str(child.parent.node_feature)
-                print child_indentation + 'Decision: ' + str(child.decision)
-
+            print_tree(child, indent+2)
+    else:
+        print indentation + '['
+        print decision_indentation + 'Deciding feature: ' + str(tree.node_feature)
+        print decision_indentation + 'Deciding value: ' + str(tree.node_feature_value)
+        print decision_indentation + 'Decision: ' + str(tree.decision)
+        print indentation + ']'
 
 if __name__ == '__main__':
     training_filename = 'training.csv'
@@ -33,7 +37,7 @@ if __name__ == '__main__':
 
     target_attr = 'boundary'
     attribute_keys = training_attributes_list[0].keys()
-    dtree = Tree(training_attributes_list, attribute_keys, target_attr, None, None, None, None, False, 0)
+    dtree = Tree(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, 0)
     if DEBUG:
         print_tree(dtree, 0)
 
