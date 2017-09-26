@@ -30,7 +30,8 @@ def get_letters_index(sequence, i_range, n):
     i = 0
     while i < len(sequence)-(n-1):
         label = key + str(i)
-        index_dict[label] = (sequence[i:i+n], i)
+        # index_dict[label] = (sequence[i:i+n], i)
+        index_dict[label] = sequence[i:i+n]
         i += n
     return index_dict
 
