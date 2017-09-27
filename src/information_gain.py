@@ -11,7 +11,9 @@ def find_values_of_attribute(training_set, key):
     return basket
 
 def find_unique_values(training_set, key):
-
+    '''
+    Finds all the possible values an attribute can be given a key.
+    '''
     allvals = []
     for item in training_set:
         if key in item: 
@@ -23,6 +25,21 @@ def find_unique_values(training_set, key):
         basket.add(item)
 
     return list(basket)
+
+def get_default_prediction(training_set, feature, feature_val, target_attr):
+    '''
+    Finds the default prediction by counting which boundary value happens most 
+    frequently in the dataset given a specific feature and a specific value for 
+    the feature.
+    '''
+    freq_dict = {}
+    for item in training_set:
+        if item[feature] == feature_val:
+            if item[target_attr] not in freq_dict:
+                freq_dict[item[target_attr]] = 1
+            else:
+                freq_dict[item[target_attr]] += 1
+    return max(freq_dict, key=freq_dict.get)
 
 def compute_probabilities(training_set, key):
     ''' Create a list allvals of all instances of attribute.  For instance, if

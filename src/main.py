@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # Create tree with training dataset 
     target_attr = 'boundary'
     attribute_keys = training_attributes_list[0].keys()
-    dtree = Tree(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, 0)
+    dtree = Tree(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
     if DEBUG:
         print_tree(dtree, 0)
 
@@ -63,9 +63,11 @@ if __name__ == '__main__':
     # Get all possible predictions
     target_values = infogain.find_unique_values(training_attributes_list, target_attr)
     # Classify testing data with decision tree
-    # for t in testing_attributes_list:
-    #     build_tree.classify(t, target_values, dtree)
-    build_tree.classify(testing_attributes_list[0], dtree)
+    # build_tree.classify(testing_attributes_list[80], dtree)
+    for t in testing_attributes_list:
+        build_tree.classify(t, dtree)
+    # build_tree.classify(testing_attributes_list, dtree)
+    
 
 
 
