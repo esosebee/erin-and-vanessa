@@ -16,9 +16,6 @@ def find_unique_values(training_set, key):
     for item in training_set:
         if key in item: 
             allvals.append(item[key])
-        # else:
-        #     if DEBUG:
-        #         print ("attribute", key, "not found in data item")
 
     # Find all unique value in allvals and throw them in basket. 
     basket = set()
@@ -52,25 +49,6 @@ def compute_probabilities(training_set, key):
         probs.append(count/n)
 
     return probs
-
-def get_default_prediction(training_set, target_attr):
-    ''' 
-    Gets the value of the most common attribute in the dataset. 
-    '''
-    freq_dict = {}
-    # Counts the number of occurrences for each value that appears in training_set
-    for t in training_set:
-        for key in t:
-            if key == target_attr:
-                val = t[key]
-                if val in freq_dict:
-                    freq_dict[val] += 1
-                else:
-                    freq_dict[val] = 1
-
-    # Returns the attribute value that occurred the most
-    return max(freq_dict, key=freq_dict.get)
-
 
 def flatten_list(lists):
     ''' Flattens a multidimensonal list into a one-dimensional list. '''
@@ -179,9 +157,6 @@ def select_attribute(training_set, features, target_feature):
     Chooses which attribute to split on by choosing the 
     attribute with the highest information gain.
     '''
-
-    ''' We're in trouble if the set attributes is empty.'''
-    ''' SHOULD PUT IN AN ASSERT HERE'''
     max_gain = 0.0
     best_feature = ''
 

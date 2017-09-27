@@ -1,5 +1,23 @@
 import information_gain as infogain 
 
+def classify(test_data, tree):
+    # At leaf node 
+    if tree.children is None:
+        print 'at leaf node!!'
+        print test_data['id']
+        print test_data['sequence']
+        print tree.decision
+        return 
+
+    node_label = tree.node_feature
+    for child in tree.children:
+        # print child.node_feature 
+        # print child.node_feature_value 
+        # print '\n'
+        if test_data[child.node_feature] == child.node_feature_value:
+            # child_data = test_data[:].remove(test_data[child.node_feature])
+            classify(test_data, child)
+
 class Tree:
     dataset = None # The dataset that was tested for this node
     remaining_attribute_keys = None
