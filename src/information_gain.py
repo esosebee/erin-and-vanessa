@@ -88,36 +88,25 @@ def remove_attribute_from_list(dataset, attribute):
 See this article about gini impurity
 https://github.com/rasbt/python-machine-learning-book/blob/master/faq/decision-tree-binary.md
 '''
-
-'''
-def gini_impurity(listofdictionaires, attribute):
-
-    probs = compute_probabilities(training_set, attribute)
-    gini = 0
+def gini(training_set, key):
+    '''
+    Given a training set consisting of attribute dictionaries and an attribute 
+    to compute the entropy with respect to, compute the experimental probabilities of 
+    each value of the attribute and then compute the entropy based on this.
+    '''
+    probs = compute_probabilities(training_set, key)
+    gini = 0.0
     for p in probs:
         gini = gini + p*p
     gini = 1 - gini
     return gini
     
-'''
-
-
-''' Given a list of dictionaries and an attribute to compute the entropy
-with respect to, compute the experimental probabilities of each value of the
-attribute and then compute the entropy based on this. 
-
-Think of the list of dictionaries as an enhanced set of data elements.   Each
-element (dictionary) is one record of the data set.
-
-Returns: entropy.   
-'''
-
 def entropy(training_set, key):
-
-    ''' Create a list allvals of all instances of attribute.  For instance, if
-    IE occurs 50 times in our data set, the value 'IE' will appear 50 times
-    in the list allvals.'''
-
+    '''
+    Given a list of attribute dictionaries and an attribute to compute the 
+    entropy for, compute the experimental probabilities of each value of the 
+    attribute and then compute the entropy based on this.
+    '''
     # Find the experimental probability of each value of the given attribute in
     # the data set listofdictionaires. Using the probabilities, compute the entropy e.
     probs = compute_probabilities(training_set, key)
@@ -149,6 +138,19 @@ def split_dataset(training_set, value):
                 new_dataset.append(item)
     return new_dataset
 
+def gini_index(training_set, feature, target_feature):
+    # Compute the gini impurity for the entire dataset for the 
+    # target feature (boundary)
+    g = gini(training_set, target_feature)
+    values = find_unique_values(training_set, feature)
+
+    g_impurity = 0.0 
+    for v in values:
+        sv = slice_of_data(training_set, feature, v)
+        g_impurity = g_impurity + gini(sv, 'boundary')
+
+    gini_index = 1 - (g_impurity)
+    return gini_index 
 
 def gain(training_set, feature, target_feature):
     ''' Given a data set training_set and a set of features, step through
@@ -158,10 +160,11 @@ def gain(training_set, feature, target_feature):
     # Compute the entropy of the entire data set using the values of the
     # target function, a.k.a. boundary. 
     e = entropy(training_set, target_feature)
-    # Find all values of the feature "feature".
-    values = find_unique_values(training_set, feature);
 
-    gain = 0
+    # Find all values of the feature "feature".
+    values = find_unique_values(training_set, feature)
+
+    gain = 0.0
     for v in values:
         sv = slice_of_data(training_set, feature, v)
         gain = gain + len(sv) * entropy(sv, 'boundary')
@@ -169,19 +172,23 @@ def gain(training_set, feature, target_feature):
     gain = e - (1/len(training_set) * gain)
     return gain
 
-def select_attribute(training_set, features, target_feature):
+def select_attribute(training_set, features, target_feature, gain_type):
     '''
     Chooses which attribute to split on by choosing the 
     attribute with the highest information gain.
     '''
     max_gain = 0.0
     best_feature = ''
-
     for f in features:
-        f_gain = gain(training_set, f, target_feature)
-        if f_gain > max_gain:
-            max_gain = f_gain 
-            best_feature = f 
+        if f is not 'boundary' or f is not 'id' or f is not 'sequence':
+            if gain_type is 'gain': # Information gain
+                f_gain = gain(training_set, f, target_feature)
+            elif gain_type is 'gini': # Gini index
+                f_gain = gini(training_set, f)
+
+            if f_gain > max_gain:
+                max_gain = f_gain 
+                best_feature = f 
     return best_feature 
 
 def main():

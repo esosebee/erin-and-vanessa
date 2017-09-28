@@ -61,7 +61,7 @@ if __name__ == '__main__':
         testing_attributes_list.append(get_data.get_testing_attributes(t))
 
     # Get all possible predictions
-    target_values = infogain.find_unique_values(training_attributes_list, target_attr)
+    # target_values = infogain.find_unique_values(training_attributes_list, target_attr)
     # Classify testing data with decision tree
     # build_tree.classify(testing_attributes_list[80], dtree)
     for t in testing_attributes_list:

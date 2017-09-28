@@ -20,6 +20,7 @@ def classify(test_data, tree):
         if test_data[child_label] == child_value:
             classify(test_data, child)
 
+
     # # Test if any children have values in the dataset
     # children_check = False
     # for child in tree.children:
@@ -90,13 +91,14 @@ class Tree:
             return 
 
         # Select the attribute with the highest information gain
-        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr)
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
+        print 'best_feature: ',best_feature
         self.node_feature = best_feature
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]
         child_remaining_attribute_keys.remove(best_feature)
         
-
         self.children = []
         for val in best_feature_values:
             # Get default prediction
