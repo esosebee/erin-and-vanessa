@@ -71,8 +71,6 @@ def write_to_csv(headers, data):
     Writes prediction data into a CSV file. 
     '''
     filename = 'submission.csv'
-    for d in data:
-        print d
     with open(filename, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(headers)
@@ -108,7 +106,7 @@ if __name__ == '__main__':
     predictions = []
     for t in testing_attributes_list:
         predictions.append(classify(t, dtree))
-
+    
     # Write predictions to file 
     headers = ['id','class']
     write_to_csv(headers, predictions)

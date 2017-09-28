@@ -64,7 +64,6 @@ def split_sequence_in_half(sequence):
 ####################################
 # Get attributes from DNA sequence #
 ####################################
-
 def get_letter_frequencies(sequence):
     freq_dict = {}
     n = len(sequence)
