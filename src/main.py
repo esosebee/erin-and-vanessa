@@ -1,11 +1,14 @@
 import csv, os
 import get_data
 import information_gain as infogain
+
 from build_tree import Tree
+from build_tree import Node
 
 import chi_square_test as chi 
 
-DEBUG = False
+DEBUG = True
+PRINT_TREE = False
 
 #########################
 # File path information #
@@ -15,7 +18,7 @@ path = os.getcwd()
 data_path = os.path.join(path, 'Data')
 
 ###############################
-# Tree printing for debugging #
+# Node printing for debugging #
 ###############################
 def print_tree(tree, indent):
     '''
@@ -23,17 +26,29 @@ def print_tree(tree, indent):
     '''
     indentation = indent * ' '
     decision_indentation = (indent+2) * ' '
-    if tree.is_leaf == False:
-        print indentation + 'Feature: ' + str(tree.node_feature)
-        print indentation + 'Value: ' + str(tree.node_feature_value)
+    if tree.children is not None:
+        print indentation + str(len(tree.children))
         for child in tree.children:
             print_tree(child, indent+2)
     else:
-        print indentation + '['
-        print decision_indentation + 'Deciding feature: ' + str(tree.node_feature)
-        print decision_indentation + 'Deciding value: ' + str(tree.node_feature_value)
-        print decision_indentation + 'Decision: ' + str(tree.decision)
-        print indentation + ']'
+        print indentation + str(0)
+    # if tree.children is not None: 
+    #     for child in tree.children:
+    #         print_tree(child, indent+2)
+    # else:
+    #     print 'Leaf: ' + tree.node_feature_value
+
+    # if tree.children is not None:
+    #     print indentation + 'Feature: ' + str(tree.node_feature)
+    #     print indentation + 'Value: ' + str(tree.node_feature_value)
+    #     for child in tree.children:
+    #         print_tree(child, indent+2)
+    # else:
+    #     print indentation + '['
+    #     print decision_indentation + 'Deciding feature: ' + str(tree.node_feature)
+    #     print decision_indentation + 'Deciding value: ' + str(tree.node_feature_value)
+    #     print decision_indentation + 'Decision: ' + str(tree.decision)
+    #     print indentation + ']'
 
 ##################
 # Classification #
@@ -78,38 +93,66 @@ def write_to_csv(headers, data):
             writer.writerow(d)
         f.close()
 
-if __name__ == '__main__':
-    training_filename = 'training.csv'
-    testing_filename = 'testing.csv'
+def test_dataset():
+    item1 = {'altitude': 'high', 'direction': 'north', 'boundary': 'no'}
+    item2 = {'altitude': 'high', 'direction': 'north', 'boundary': 'no'}    
+    item3 = {'altitude': 'high', 'direction': 'south', 'boundary': 'no'}
+    item4 = {'altitude': 'high', 'direction': 'south', 'boundary': 'no'}
+    item5 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    item6 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    item7 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    item8 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    item9 = {'altitude': 'low', 'direction': 'south', 'boundary': 'no'}
+    item10 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    
+    data_set = [item1, item2, item3, item4, item5, item6, item7,
+                item8, item9, item10]
+    
+    # def __init__(self, dataset, remaining_attribute_keys, target_attr, node_feature, node_feature_value, children, parent, decision, is_leaf, default_prediction, depth):
 
-    training_data = get_data.load_dataset(training_filename, data_path)
-    testing_data = get_data.load_dataset(testing_filename, data_path)
-
-    # Get attributes for training data
-    training_attributes_list = []
-    for t in training_data:
-        training_attributes_list.append(get_data.get_training_attributes(t))
-
-    # Create tree with training dataset 
+    attribute_keys = [ 'altitude', 'direction']
     target_attr = 'boundary'
-    attribute_keys = training_attributes_list[0].keys()
-    dtree = Tree(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
-    if DEBUG:
-        print_tree(dtree, 0)
 
-    # Get attributes for test data
-    testing_attributes_list = []
-    for t in testing_data:
-        testing_attributes_list.append(get_data.get_testing_attributes(t))
+    root_node = Node(data_set, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
+    dtree = Tree(root_node)
+    # dtree = Node(data_set, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
+    # if PRINT_TREE: print_tree(dtree, 0)
+
+if __name__ == '__main__':
+    if DEBUG:
+        test_dataset()
+
+    # training_filename = 'training.csv'
+    # testing_filename = 'testing.csv'
+
+    # training_data = get_data.load_dataset(training_filename, data_path)
+    # testing_data = get_data.load_dataset(testing_filename, data_path)
+
+    # # Get attributes for training data
+    # training_attributes_list = []
+    # for t in training_data:
+    #     training_attributes_list.append(get_data.get_training_attributes(t))
+
+    # # Create tree with training dataset 
+    # target_attr = 'boundary'
+    # attribute_keys = training_attributes_list[0].keys()
+    # dtree = Node(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
+    # if PRINT_TREE:
+    #     print_tree(dtree, 0)
+
+    # # Get attributes for test data
+    # testing_attributes_list = []
+    # for t in testing_data:
+    #     testing_attributes_list.append(get_data.get_testing_attributes(t))
     
-    # Classify testing data with decision tree
-    predictions = []
-    for t in testing_attributes_list:
-        predictions.append(classify(t, dtree))
+    # # Classify testing data with decision tree
+    # predictions = []
+    # for t in testing_attributes_list:
+    #     predictions.append(classify(t, dtree))
     
-    # Write predictions to file 
-    headers = ['id','class']
-    write_to_csv(headers, predictions)
+    # # Write predictions to file 
+    # headers = ['id','class']
+    # write_to_csv(headers, predictions)
     
 
     
