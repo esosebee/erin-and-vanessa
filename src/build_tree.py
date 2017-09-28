@@ -1,6 +1,21 @@
 import information_gain as infogain 
 
 class Tree:
+    node = None # The node to start building the tree on 
+
+    def __init__(self, node):
+        self.build_tree(node)
+        return
+
+    def build_tree(self, node):
+        if node.children is not None:
+            for child in node.children:
+                print len(node.children)
+                if child.node_feature_value == 'low':
+                    new_node = Node(child.dataset, child.remaining_attribute_keys, child.target_attr, child.node_feature, child.node_feature_value, child.children, child.parent, child.decision, child.is_leaf, child.default_prediction, child.depth)
+                    return self.build_tree(new_node)
+
+class Node:
     dataset = None # The dataset that was tested for this node
     remaining_attribute_keys = None
     target_attr =  None # The target attribute to be tested for (a.k.a. 'boundary')
@@ -9,9 +24,9 @@ class Tree:
     children = None # A list of this node's child nodes
     parent = None # Parent of the current node
     decision = None # The final prediction of the branch of the tree (only as value at leaf nodes: IE, EI, N)
-    is_leaf = None # Marks if a tree is a leaf or not
+    is_leaf = False # Marks if a tree is a leaf or not
     default_prediction = None 
-    depth = None # The depth of the node in the tree
+    depth = 0 # The depth of the node in the tree
 
     def __init__(self, dataset, remaining_attribute_keys, target_attr, node_feature, node_feature_value, children, parent, decision, is_leaf, default_prediction, depth):
         '''
@@ -29,46 +44,49 @@ class Tree:
         self.default_prediction = default_prediction
         self.depth = depth
 
-        # Begin building tree
-        self.build_decision_tree(dataset, remaining_attribute_keys, target_attr, is_leaf, depth)
+        # Create tree node 
+        self.create_node(dataset, remaining_attribute_keys, target_attr, is_leaf, depth)
         return
 
-    def build_decision_tree(self, dataset, remaining_attribute_keys, target_attr, is_leaf, depth):
+    def add_children(self, dataset, best_feature, values, remaining_attribute_keys, target_attr, depth):
         '''
-        Recursively build the decision tree.
+        Recursively add children for the current tree node.
         '''
-        # Remaining boundary values
-        target_values = list(infogain.find_values_of_attribute(dataset, target_attr))
+        self.children = []
+        for val in values:
+            # Get node's default prediction
+            default_prediction = infogain.get_default_prediction(dataset, best_feature, val, target_attr)
+            child_dataset = infogain.slice_of_data(dataset, best_feature, val)
+            self.children.append(Node(child_dataset, remaining_attribute_keys, target_attr, best_feature, val, None, self, None, False, default_prediction, depth+1))
 
-        # At leaf node: stop recursing
-        if len(dataset) == 1 or len(remaining_attribute_keys) == 1:
-            print 'leaf'
+    def create_node(self, dataset, remaining_attribute_keys, target_attr, is_leaf, depth):
+        '''
+        Create a node for the tree.
+        '''
+        # Get the remaining boundary values
+        target_values = list(infogain.find_values_of_attribute(dataset, target_attr))
+        
+        # At leaf node: set decision for node 
+        if len(dataset) == 1 or len(remaining_attribute_keys) == 0:
             self.is_leaf = True 
             self.decision = dataset[0][target_attr]
-            return 
+            return
 
-        # If only one boundary value remains, stop recursing
+        # Only one boundary value remains, stop recursing and set decision to the remaining value 
         if len(target_values) == 1:
-            self.is_leaf = True
+            self.is_leaf = True 
             self.decision = target_values[0]
             return
 
-        # Select the attribute with the highest information gain
+        # Get node values using information gain 
         best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
-        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
-        self.node_feature = best_feature
+        self.node_feature = best_feature 
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]
         child_remaining_attribute_keys.remove(best_feature)
-        
-        self.children = []
-        for val in best_feature_values:
-            # Get default prediction
-            default_prediction = infogain.get_default_prediction(dataset, best_feature, val, target_attr)
-            child_dataset = infogain.slice_of_data(dataset, best_feature, val)
-            self.children.append(Tree(child_dataset, child_remaining_attribute_keys, target_attr, best_feature, val, None, self, None, False, default_prediction, depth+1))
 
-
-
+        # Get node's children
+        if self.children is None:
+            self.add_children(dataset, best_feature, best_feature_values, child_remaining_attribute_keys, target_attr, depth)
 
 
