@@ -37,7 +37,6 @@ def random_replacement(sequence):
             new_sequence[i] = replacements[randint(0, len(replacements)-1)]
     return ''.join(new_sequence)
 
-
 def weighted_replacement(sequence, letter_probs):
     new_sequence = list(sequence)
     print letter_probs
@@ -57,14 +56,9 @@ def weighted_replacement(sequence, letter_probs):
             # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
     return ''.join(new_sequence)
 
-def split_sequence_in_half(sequence):
-    ''' Splits a DNA sequence perfectly in half. '''
-    return sequence[:len(sequence)/2], sequence[len(sequence)/2:]
-
 ####################################
 # Get attributes from DNA sequence #
 ####################################
-
 def get_letter_frequencies(sequence):
     freq_dict = {}
     n = len(sequence)
@@ -124,9 +118,9 @@ def get_training_attributes(data):
     attributes['id'] = seq_id
     attributes['sequence'] = sequence
     attributes['boundary'] = boundary
-    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 def get_testing_attributes(data):
@@ -143,9 +137,9 @@ def get_testing_attributes(data):
     attributes = {}
     attributes['id'] = seq_id
     attributes['sequence'] = sequence 
-    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 ########################

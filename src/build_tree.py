@@ -39,18 +39,19 @@ class Tree:
         '''
         # Remaining boundary values
         target_values = list(infogain.find_values_of_attribute(dataset, target_attr))
-        
+
+        # At leaf node: stop recursing
+        if len(dataset) == 1 or len(remaining_attribute_keys) == 1:
+            print 'leaf'
+            self.is_leaf = True 
+            self.decision = dataset[0][target_attr]
+            return 
+
         # If only one boundary value remains, stop recursing
         if len(target_values) == 1:
             self.is_leaf = True
             self.decision = target_values[0]
             return
-
-        # At leaf node: stop recursing
-        if len(dataset) == 1 or len(remaining_attribute_keys) == 1:
-            self.is_leaf = True 
-            self.decision = dataset[0][target_attr]
-            return 
 
         # Select the attribute with the highest information gain
         best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
