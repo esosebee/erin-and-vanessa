@@ -11,14 +11,13 @@ def find_values_of_attribute(training_set, key):
     return basket
 
 def find_unique_values(training_set, key):
-
+    '''
+    Finds all the possible values an attribute can be given a key.
+    '''
     allvals = []
     for item in training_set:
         if key in item: 
             allvals.append(item[key])
-        # else:
-        #     if DEBUG:
-        #         print ("attribute", key, "not found in data item")
 
     # Find all unique value in allvals and throw them in basket. 
     basket = set()
@@ -26,6 +25,21 @@ def find_unique_values(training_set, key):
         basket.add(item)
 
     return list(basket)
+
+def get_default_prediction(training_set, feature, feature_val, target_attr):
+    '''
+    Finds the default prediction by counting which boundary value happens most 
+    frequently in the dataset given a specific feature and a specific value for 
+    the feature.
+    '''
+    freq_dict = {}
+    for item in training_set:
+        if item[feature] == feature_val:
+            if item[target_attr] not in freq_dict:
+                freq_dict[item[target_attr]] = 1
+            else:
+                freq_dict[item[target_attr]] += 1
+    return max(freq_dict, key=freq_dict.get)
 
 def compute_probabilities(training_set, key):
     ''' Create a list allvals of all instances of attribute.  For instance, if
@@ -53,25 +67,6 @@ def compute_probabilities(training_set, key):
 
     return probs
 
-def get_default_prediction(training_set, target_attr):
-    ''' 
-    Gets the value of the most common attribute in the dataset. 
-    '''
-    freq_dict = {}
-    # Counts the number of occurrences for each value that appears in training_set
-    for t in training_set:
-        for key in t:
-            if key == target_attr:
-                val = t[key]
-                if val in freq_dict:
-                    freq_dict[val] += 1
-                else:
-                    freq_dict[val] = 1
-
-    # Returns the attribute value that occurred the most
-    return max(freq_dict, key=freq_dict.get)
-
-
 def flatten_list(lists):
     ''' Flattens a multidimensonal list into a one-dimensional list. '''
     return [item for sublist in lists for item in sublist]
@@ -93,36 +88,25 @@ def remove_attribute_from_list(dataset, attribute):
 See this article about gini impurity
 https://github.com/rasbt/python-machine-learning-book/blob/master/faq/decision-tree-binary.md
 '''
-
-'''
-def gini_impurity(listofdictionaires, attribute):
-
-    probs = compute_probabilities(training_set, attribute)
-    gini = 0
+def gini(training_set, key):
+    '''
+    Given a training set consisting of attribute dictionaries and an attribute 
+    to compute the entropy with respect to, compute the experimental probabilities of 
+    each value of the attribute and then compute the entropy based on this.
+    '''
+    probs = compute_probabilities(training_set, key)
+    gini = 0.0
     for p in probs:
         gini = gini + p*p
     gini = 1 - gini
     return gini
     
-'''
-
-
-''' Given a list of dictionaries and an attribute to compute the entropy
-with respect to, compute the experimental probabilities of each value of the
-attribute and then compute the entropy based on this. 
-
-Think of the list of dictionaries as an enhanced set of data elements.   Each
-element (dictionary) is one record of the data set.
-
-Returns: entropy.   
-'''
-
 def entropy(training_set, key):
-
-    ''' Create a list allvals of all instances of attribute.  For instance, if
-    IE occurs 50 times in our data set, the value 'IE' will appear 50 times
-    in the list allvals.'''
-
+    '''
+    Given a list of attribute dictionaries and an attribute to compute the 
+    entropy for, compute the experimental probabilities of each value of the 
+    attribute and then compute the entropy based on this.
+    '''
     # Find the experimental probability of each value of the given attribute in
     # the data set listofdictionaires. Using the probabilities, compute the entropy e.
     probs = compute_probabilities(training_set, key)
@@ -154,6 +138,19 @@ def split_dataset(training_set, value):
                 new_dataset.append(item)
     return new_dataset
 
+def gini_index(training_set, feature, target_feature):
+    # Compute the gini impurity for the entire dataset for the 
+    # target feature (boundary)
+    g = gini(training_set, target_feature)
+    values = find_unique_values(training_set, feature)
+
+    g_impurity = 0.0 
+    for v in values:
+        sv = slice_of_data(training_set, feature, v)
+        g_impurity = g_impurity + gini(sv, 'boundary')
+
+    gini_index = 1 - (g_impurity)
+    return gini_index 
 
 def gain(training_set, feature, target_feature):
     ''' Given a data set training_set and a set of features, step through
@@ -163,10 +160,11 @@ def gain(training_set, feature, target_feature):
     # Compute the entropy of the entire data set using the values of the
     # target function, a.k.a. boundary. 
     e = entropy(training_set, target_feature)
-    # Find all values of the feature "feature".
-    values = find_unique_values(training_set, feature);
 
-    gain = 0
+    # Find all values of the feature "feature".
+    values = find_unique_values(training_set, feature)
+
+    gain = 0.0
     for v in values:
         sv = slice_of_data(training_set, feature, v)
         gain = gain + len(sv) * entropy(sv, 'boundary')
@@ -174,22 +172,23 @@ def gain(training_set, feature, target_feature):
     gain = e - (1/len(training_set) * gain)
     return gain
 
-def select_attribute(training_set, features, target_feature):
+def select_attribute(training_set, features, target_feature, gain_type):
     '''
     Chooses which attribute to split on by choosing the 
     attribute with the highest information gain.
     '''
-
-    ''' We're in trouble if the set attributes is empty.'''
-    ''' SHOULD PUT IN AN ASSERT HERE'''
     max_gain = 0.0
     best_feature = ''
-
     for f in features:
-        f_gain = gain(training_set, f, target_feature)
-        if f_gain > max_gain:
-            max_gain = f_gain 
-            best_feature = f 
+        if f is not 'boundary' or f is not 'id' or f is not 'sequence':
+            if gain_type is 'gain': # Information gain
+                f_gain = gain(training_set, f, target_feature)
+            elif gain_type is 'gini': # Gini index
+                f_gain = gini(training_set, f)
+
+            if f_gain > max_gain:
+                max_gain = f_gain 
+                best_feature = f 
     return best_feature 
 
 def main():

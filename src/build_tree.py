@@ -10,9 +10,10 @@ class Tree:
     parent = None # Parent of the current node
     decision = None # The final prediction of the branch of the tree (only as value at leaf nodes: IE, EI, N)
     is_leaf = None # Marks if a tree is a leaf or not
+    default_prediction = None 
     depth = None # The depth of the node in the tree
 
-    def __init__(self, dataset, remaining_attribute_keys, target_attr, node_feature, node_feature_value, children, parent, decision, is_leaf, depth):
+    def __init__(self, dataset, remaining_attribute_keys, target_attr, node_feature, node_feature_value, children, parent, decision, is_leaf, default_prediction, depth):
         '''
         Create decision tree node.
         '''
@@ -25,6 +26,7 @@ class Tree:
         self.parent = parent
         self.decision = decision
         self.is_leaf = is_leaf
+        self.default_prediction = default_prediction
         self.depth = depth
 
         # Begin building tree
@@ -51,16 +53,19 @@ class Tree:
             return 
 
         # Select the attribute with the highest information gain
-        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr)
+        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
         self.node_feature = best_feature
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]
         child_remaining_attribute_keys.remove(best_feature)
-
+        
         self.children = []
         for val in best_feature_values:
+            # Get default prediction
+            default_prediction = infogain.get_default_prediction(dataset, best_feature, val, target_attr)
             child_dataset = infogain.slice_of_data(dataset, best_feature, val)
-            self.children.append(Tree(child_dataset, child_remaining_attribute_keys, target_attr, best_feature, val, None, self, None, False, depth+1))
+            self.children.append(Tree(child_dataset, child_remaining_attribute_keys, target_attr, best_feature, val, None, self, None, False, default_prediction, depth+1))
 
 
 
