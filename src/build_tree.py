@@ -1,43 +1,5 @@
 import information_gain as infogain 
 
-def remove_key(dicts, key):
-    d = dict(dicts)
-    del d[key]
-    return d
-
-def classify(test_data, tree):
-    # At leaf node 
-    if tree.children is None:
-        print 'ID: ',test_data['id']
-        print 'Sequence: ',test_data['sequence']
-        print 'Decision: ',tree.decision 
-        print '\n'
-        return 
-
-    for child in tree.children:
-        child_label = child.node_feature 
-        child_value = child.node_feature_value 
-        if test_data[child_label] == child_value:
-            classify(test_data, child)
-
-
-    # # Test if any children have values in the dataset
-    # children_check = False
-    # for child in tree.children:
-    #     child_label = child.node_feature 
-    #     child_value = child.node_feature_value 
-    #     children_check = children_check or (test_data[child_label] == child_value)
-    
-    # if not children_check:
-    #     print 'prediction: ',tree.default_prediction
-    #     return
-    # else:
-    #     for child in tree.children:
-    #         child_label = child.node_feature 
-    #         child_value = child.node_feature_value 
-    #         if test_data[child_label] == child_value:
-    #             classify(test_data, child)
-
 class Tree:
     dataset = None # The dataset that was tested for this node
     remaining_attribute_keys = None
@@ -91,9 +53,8 @@ class Tree:
             return 
 
         # Select the attribute with the highest information gain
-        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
-        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
-        print 'best_feature: ',best_feature
+        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
         self.node_feature = best_feature
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]

@@ -124,9 +124,9 @@ def get_training_attributes(data):
     attributes['id'] = seq_id
     attributes['sequence'] = sequence
     attributes['boundary'] = boundary
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 def get_testing_attributes(data):
@@ -143,9 +143,9 @@ def get_testing_attributes(data):
     attributes = {}
     attributes['id'] = seq_id
     attributes['sequence'] = sequence 
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 ########################

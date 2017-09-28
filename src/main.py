@@ -15,6 +15,9 @@ os.chdir('..')
 path = os.getcwd()
 data_path = os.path.join(path, 'Data')
 
+###############################
+# Tree printing for debugging #
+###############################
 def print_tree(tree, indent):
     '''
     Prints string to console for debugging purposes.
@@ -33,7 +36,34 @@ def print_tree(tree, indent):
         print decision_indentation + 'Decision: ' + str(tree.decision)
         print indentation + ']'
 
-# def main():
+##################
+# Classification #
+##################
+def remove_key(dicts, key):
+    d = dict(dicts)
+    del d[key]
+    return d
+
+def classify(test_data, tree):
+    # At leaf node 
+    if tree.children is None:
+        final_str = str(test_data['id']) + ',' + str(tree.decision)
+        # print final_str
+        return final_str
+
+    children_check = False
+    for child in tree.children:
+        child_label = child.node_feature 
+        child_value = child.node_feature_value 
+        children_check = children_check or (test_data[child_label] == child_value)
+        if test_data[child_label] == child_value:
+            classify(test_data, child)
+
+    # If a leaf node can't be reached, return the default prediction
+    if children_check == False:
+        final_str = str(test_data['id']) + ',' + str(tree.default_prediction)
+        # print final_str 
+        return final_str
 
 
 if __name__ == '__main__':
@@ -62,11 +92,15 @@ if __name__ == '__main__':
 
     # Get all possible predictions
     # target_values = infogain.find_unique_values(training_attributes_list, target_attr)
+    
     # Classify testing data with decision tree
-    # build_tree.classify(testing_attributes_list[80], dtree)
+    predictions = []
     for t in testing_attributes_list:
-        build_tree.classify(t, dtree)
-    # build_tree.classify(testing_attributes_list, dtree)
+        print classify(t, dtree)
+        # build_tree.classify(t, dtree)
+        # print build_tree.classify(t, dtree)
+        # predictions.append(build_tree.classify(t, dtree))
+    # print predictions
     
 
 
