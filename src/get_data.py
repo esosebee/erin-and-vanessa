@@ -37,7 +37,6 @@ def random_replacement(sequence):
             new_sequence[i] = replacements[randint(0, len(replacements)-1)]
     return ''.join(new_sequence)
 
-
 def weighted_replacement(sequence, letter_probs):
     new_sequence = list(sequence)
     print letter_probs
@@ -56,10 +55,6 @@ def weighted_replacement(sequence, letter_probs):
             replacements = ['A', 'G']
             # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
     return ''.join(new_sequence)
-
-def split_sequence_in_half(sequence):
-    ''' Splits a DNA sequence perfectly in half. '''
-    return sequence[:len(sequence)/2], sequence[len(sequence)/2:]
 
 ####################################
 # Get attributes from DNA sequence #
