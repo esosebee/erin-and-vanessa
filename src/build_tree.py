@@ -1,6 +1,11 @@
 import information_gain as infogain 
+import vanessa_chi_squared as vchi2 
+# from scipy.stats import chi2
 
 class Tree:
+    '''
+    Class that handles building the tree.
+    '''
     node = None # The node to start building the tree on 
 
     def __init__(self, node):
@@ -8,14 +13,19 @@ class Tree:
         return
 
     def build_tree(self, node):
+        '''
+        Recursively build a tree given a node.
+        '''
         if node.children is not None:
             for child in node.children:
-                print len(node.children)
                 if child.node_feature_value == 'low':
                     new_node = Node(child.dataset, child.remaining_attribute_keys, child.target_attr, child.node_feature, child.node_feature_value, child.children, child.parent, child.decision, child.is_leaf, child.default_prediction, child.depth)
                     return self.build_tree(new_node)
 
 class Node:
+    '''
+    Class that represents a node in the tree.
+    '''
     dataset = None # The dataset that was tested for this node
     remaining_attribute_keys = None
     target_attr =  None # The target attribute to be tested for (a.k.a. 'boundary')
@@ -80,6 +90,7 @@ class Node:
 
         # Get node values using information gain 
         best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
         self.node_feature = best_feature 
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]
