@@ -1,4 +1,6 @@
 import information_gain as infogain 
+import vanessa_chi_squared as vchi2 
+# from scipy.stats import chi2
 
 class Tree:
     '''
@@ -87,8 +89,8 @@ class Node:
             return
 
         # Get node values using information gain 
-        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
-        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
+        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
         self.node_feature = best_feature 
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]
