@@ -37,25 +37,6 @@ def random_replacement(sequence):
             new_sequence[i] = replacements[randint(0, len(replacements)-1)]
     return ''.join(new_sequence)
 
-def weighted_replacement(sequence, letter_probs):
-    new_sequence = list(sequence)
-    print letter_probs
-    for i in range(0, len(sequence)):
-        char = sequence[i]
-        if char == 'D': # A or G or T
-            replacements = ['A', 'G', 'T']
-            # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
-        elif char == 'N': # A or G or C or T
-            replacements = ['A', 'G', 'C', 'T']
-            # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
-        elif char == 'S': # C or G
-            replacements = ['C', 'G']
-            # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
-        elif char == 'R': # A or G
-            replacements = ['A', 'G']
-            # new_sequence[i] = replacements[randint(0, len(replacements)-1)]
-    return ''.join(new_sequence)
-
 ####################################
 # Get attributes from DNA sequence #
 ####################################
@@ -108,19 +89,15 @@ def get_training_attributes(data):
 
     # Handle ambiguous characters in sequence if present
     if is_ambiguous(sequence):
-        if RAND_REPLACE:
-            sequence = random_replacement(sequence)
-        # elif PROB_REPLACE:
-        #     letter_probs = get_letter_probabilities(sequence)
-        #     sequence = weighted_replacement(sequence, letter_probs)
+        sequence = random_replacement(sequence)
   
     attributes = {}
     attributes['id'] = seq_id
     attributes['sequence'] = sequence
     attributes['boundary'] = boundary
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 def get_testing_attributes(data):
@@ -138,8 +115,8 @@ def get_testing_attributes(data):
     attributes['id'] = seq_id
     attributes['sequence'] = sequence 
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
-    attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
+    # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 3))
     return attributes
 
 ########################

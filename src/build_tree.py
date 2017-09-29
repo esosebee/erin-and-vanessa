@@ -10,7 +10,6 @@ class Tree:
     def build_tree(self, node):
         if node.children is not None:
             for child in node.children:
-                print len(node.children)
                 if child.node_feature_value == 'low':
                     new_node = Node(child.dataset, child.remaining_attribute_keys, child.target_attr, child.node_feature, child.node_feature_value, child.children, child.parent, child.decision, child.is_leaf, child.default_prediction, child.depth)
                     return self.build_tree(new_node)
@@ -79,7 +78,8 @@ class Node:
             return
 
         # Get node values using information gain 
-        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        # best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gain')
+        best_feature = infogain.select_attribute(dataset, remaining_attribute_keys, target_attr, 'gini')
         self.node_feature = best_feature 
         best_feature_values = infogain.find_unique_values(dataset, best_feature)
         child_remaining_attribute_keys = remaining_attribute_keys[:]

@@ -7,7 +7,7 @@ from build_tree import Node
 
 import chi_square_test as chi 
 
-DEBUG = True
+DEBUG = False
 PRINT_TREE = False
 
 #########################
@@ -115,44 +115,44 @@ def test_dataset():
 
     root_node = Node(data_set, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
     dtree = Tree(root_node)
-    # dtree = Node(data_set, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
-    # if PRINT_TREE: print_tree(dtree, 0)
+    if PRINT_TREE: print_tree(dtree, 0)
 
 if __name__ == '__main__':
+    # Test algorithm on small dataset from class
     if DEBUG:
         test_dataset()
 
-    # training_filename = 'training.csv'
-    # testing_filename = 'testing.csv'
+    training_filename = 'training.csv'
+    testing_filename = 'testing.csv'
 
-    # training_data = get_data.load_dataset(training_filename, data_path)
-    # testing_data = get_data.load_dataset(testing_filename, data_path)
+    training_data = get_data.load_dataset(training_filename, data_path)
+    testing_data = get_data.load_dataset(testing_filename, data_path)
 
-    # # Get attributes for training data
-    # training_attributes_list = []
-    # for t in training_data:
-    #     training_attributes_list.append(get_data.get_training_attributes(t))
+    # Get attributes for training data
+    training_attributes_list = []
+    for t in training_data:
+        training_attributes_list.append(get_data.get_training_attributes(t))
 
-    # # Create tree with training dataset 
-    # target_attr = 'boundary'
-    # attribute_keys = training_attributes_list[0].keys()
-    # dtree = Node(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
-    # if PRINT_TREE:
-    #     print_tree(dtree, 0)
+    # Create tree with training dataset 
+    target_attr = 'boundary'
+    attribute_keys = training_attributes_list[0].keys()
+    dtree = Node(training_attributes_list, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
+    if PRINT_TREE:
+        print_tree(dtree, 0)
 
-    # # Get attributes for test data
-    # testing_attributes_list = []
-    # for t in testing_data:
-    #     testing_attributes_list.append(get_data.get_testing_attributes(t))
+    # Get attributes for test data
+    testing_attributes_list = []
+    for t in testing_data:
+        testing_attributes_list.append(get_data.get_testing_attributes(t))
     
-    # # Classify testing data with decision tree
-    # predictions = []
-    # for t in testing_attributes_list:
-    #     predictions.append(classify(t, dtree))
+    # Classify testing data with decision tree
+    predictions = []
+    for t in testing_attributes_list:
+        predictions.append(classify(t, dtree))
     
-    # # Write predictions to file 
-    # headers = ['id','class']
-    # write_to_csv(headers, predictions)
+    # Write predictions to file 
+    headers = ['id','class']
+    write_to_csv(headers, predictions)
     
 
     
