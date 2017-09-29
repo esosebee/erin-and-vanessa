@@ -64,7 +64,6 @@ def compute_probabilities(training_set, key):
     probs = []
     for count in counts:
         probs.append(count/n)
-
     return probs
 
 def flatten_list(lists):
@@ -84,10 +83,6 @@ def remove_attribute_from_list(dataset, attribute):
                 new_dataset[i] = d 
     return new_dataset
 
-'''
-See this article about gini impurity
-https://github.com/rasbt/python-machine-learning-book/blob/master/faq/decision-tree-binary.md
-'''
 def gini(training_set, key):
     '''
     Given a training set consisting of attribute dictionaries and an attribute 
@@ -136,20 +131,6 @@ def split_dataset(training_set, value):
             if item[key] == value:
                 new_dataset.append(item)
     return new_dataset
-
-def gini_index(training_set, feature, target_feature):
-    # Compute the gini impurity for the entire dataset for the 
-    # target feature (boundary)
-    g = gini(training_set, target_feature)
-    values = find_unique_values(training_set, feature)
-
-    g_impurity = 0.0 
-    for v in values:
-        sv = slice_of_data(training_set, feature, v)
-        g_impurity = g_impurity + gini(sv, 'boundary')
-
-    gini_index = 1 - (g_impurity)
-    return gini_index 
 
 def gain(training_set, feature, target_feature):
     ''' Given a data set training_set and a set of features, step through

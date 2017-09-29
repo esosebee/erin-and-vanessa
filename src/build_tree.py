@@ -1,6 +1,9 @@
 import information_gain as infogain 
 
 class Tree:
+    '''
+    Class that handles building the tree.
+    '''
     node = None # The node to start building the tree on 
 
     def __init__(self, node):
@@ -8,6 +11,9 @@ class Tree:
         return
 
     def build_tree(self, node):
+        '''
+        Recursively build a tree given a node.
+        '''
         if node.children is not None:
             for child in node.children:
                 if child.node_feature_value == 'low':
@@ -15,6 +21,9 @@ class Tree:
                     return self.build_tree(new_node)
 
 class Node:
+    '''
+    Class that represents a node in the tree.
+    '''
     dataset = None # The dataset that was tested for this node
     remaining_attribute_keys = None
     target_attr =  None # The target attribute to be tested for (a.k.a. 'boundary')
