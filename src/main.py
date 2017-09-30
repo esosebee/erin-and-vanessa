@@ -45,26 +45,45 @@ def print_tree(node, indent):
 ##################
 def classify(test_data, node):
     '''
-    Classifies the given data by recursively traversing the decision tree created with 
+    Classifies the given piece of data by recursively traversing the decision tree created with 
     the training data. At each node, the feature label and the feature value are 
     compared to what is present in test_data. If the test_data contains the value, 
     then this function recurses on that node.
     '''
-    # At leaf node 
+    # At leaf node
     if node.children is None:
         return test_data['id'],node.decision
 
-    children_check = False
-    for child in node.children:
-        child_label = child.node_feature 
-        child_value = child.node_feature_value 
-        children_check = children_check or (test_data[child_label] == child_value)
-        if test_data[child_label] == child_value:
-            return classify(test_data, child)
+    # What is the dedicing feature in node? Which child of node has deciding
+    # feature value that matches the value of that same deciding feature in node?
+    #
+    # The deciding feature in node is node.node_feature or
+    # node.feature_value, I don't know which.
+    else: 
+        print "node.node_feature_value", node.node_feature_value
+        print "node.node_feature", node.node_feature
+    
+    
+        # Find the child that has value of node.feature_value (node.node_feature_value is a key,
+        # like 'altitude')
+    
+        no_such_kid = True
+        child_to_traverse = None
+        for child in node.children:
+            # Check which of the children has value of deciding feature matching
+            # the node.  Call classify on that child.
+            # If there is no such node, behave the same as in the leaf case.
+            print "test_data[node.node_feature]" , test_data[node.node_feature],\
+                 "child.node_feature_value", child.node_feature_value
+            if test_data[node.node_feature] ==  child.node_feature_value:
+                no_such_kid = False
+                child_to_traverse = child
 
-    # If a leaf node can't be reached, return the default prediction
-    if children_check == False:
-        return test_data['id'], node.default_prediction
+        if no_such_kid:
+            #We didn't find a child to traverse.  Return like we're at a leaf.
+            return test_data['id'],node.decision
+        else: 
+            return classify(test_data, child_to_traverse)
 
 def write_to_csv(headers, data):
     '''
@@ -139,6 +158,9 @@ if __name__ == '__main__':
     for t in testing_attributes_list:
         predictions.append(classify(t, root_node))
     
+    for p in predictions:
+        print p
+
     # Write predictions to file 
     headers = ['id','class']
     write_to_csv(headers, predictions)

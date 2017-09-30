@@ -70,7 +70,7 @@ class Node:
             # Get node's default prediction
             default_prediction = infogain.get_default_prediction(dataset, best_feature, val, target_attr)
             child_dataset = infogain.slice_of_data(dataset, best_feature, val)
-            self.children.append(Node(child_dataset, remaining_attribute_keys, target_attr, best_feature, val, None, self, None, False, default_prediction, depth+1))
+            self.children.append(Node(child_dataset, remaining_attribute_keys, target_attr, best_feature, val, None, self, default_prediction, False, default_prediction, depth+1))
 
     def create_node(self, dataset, remaining_attribute_keys, target_attr, is_leaf, depth):
         '''
@@ -100,8 +100,7 @@ class Node:
         child_remaining_attribute_keys.remove(best_feature)
 
         # Get node's children
-        if self.children is None:
-            self.add_children(dataset, best_feature, best_feature_values, child_remaining_attribute_keys, target_attr, depth)
+        self.add_children(dataset, best_feature, best_feature_values, child_remaining_attribute_keys, target_attr, depth)
 
 
 

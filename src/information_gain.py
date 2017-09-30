@@ -83,6 +83,16 @@ def remove_attribute_from_list(dataset, attribute):
                 new_dataset[i] = d 
     return new_dataset
 
+def slice_of_data(training_set, key, value):
+
+    ''' Construct a list of all dictionaries from training_set for which
+    attribute has the specified value. '''
+    datalist = []
+    for item in training_set:
+        if item[key] == value:
+            datalist.append(item)
+    return datalist
+
 def gini(training_set, key):
     '''
     Given a training set consisting of attribute dictionaries and an attribute 
@@ -111,16 +121,6 @@ def entropy(training_set, key):
     e = -1*e
     return e
 
-def slice_of_data(training_set, key, value):
-
-    ''' Construct a list of all dictionaries from training_set for which
-    attribute has the specified value. '''
-    datalist = []
-    for item in training_set:
-        if item[key] == value:
-            datalist.append(item)
-    return datalist
-
 def gain(training_set, feature, target_feature):
     ''' Given a data set training_set and a set of features, step through
     the features to find the best information gain spliting on that feature.
@@ -132,7 +132,6 @@ def gain(training_set, feature, target_feature):
 
     # Find all values of the feature "feature".
     values = find_unique_values(training_set, feature)
-
     gain = 0.0
     for v in values:
         sv = slice_of_data(training_set, feature, v)
@@ -150,7 +149,6 @@ def select_attribute(training_set, features, target_feature, gain_type):
     baseline_score = 999.0 # For Gini Index
     best_feature = ''
     for f in features:
-        # Exclude features that are not used for prediction
         if gain_type is 'gain': # Information gain
             f_gain = gain(training_set, f, target_feature)
             if f_gain > max_gain:

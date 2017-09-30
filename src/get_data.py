@@ -92,8 +92,8 @@ def get_training_attributes(data):
         sequence = random_replacement(sequence)
   
     attributes = {}
-    attributes['id'] = seq_id
-    attributes['sequence'] = sequence
+    # attributes['id'] = seq_id
+    # attributes['sequence'] = sequence
     attributes['boundary'] = boundary
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
