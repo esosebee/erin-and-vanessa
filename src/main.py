@@ -133,9 +133,20 @@ if __name__ == '__main__':
     # Install needed libraries
     install_libraries()
 
+    # Default file names and paths if no arguments are given 
+    os.chdir('..')
+    path = os.getcwd()
+    data_path = os.path.join(path, 'Data')
+    default_training_path = os.path.join(data_path, 'training.csv')
+    default_testing_path = os.path.join(data_path, 'testing.csv')
+
     # Parse command line args
-    myargs = get_args(sys.argv[1:])
-    training_filename, testing_filename = parse_args(myargs) # Get filenames
+    if len(sys.argv[1:]) < 1:
+        training_filename = default_training_path
+        testing_filename = default_testing_path
+    else:
+        myargs = get_args(sys.argv[1:])
+        training_filename, testing_filename = parse_args(myargs) # Get filenames
     
     training_data = get_data.load_dataset(training_filename)
     testing_data = get_data.load_dataset(testing_filename)

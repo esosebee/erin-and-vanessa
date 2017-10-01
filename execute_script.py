@@ -26,32 +26,39 @@ def parse_args(args):
         print_usage()
         sys.exit(0)
 
+def handle_spaces(pathname):
+    '''
+    Handle spaces in path names.
+    '''
+    newpath = pathname
+    if ' ' in pathname:
+        newpath = pathname.replace(' ', '\\ ')
+    return newpath
+
+def get_args(argv):
+    '''
+    Get all arguments from the user input.
+    '''
+    opts = {}
+    while argv:
+        if argv[0][0] == '-':
+            opts[argv[0]] = argv[1]
+        argv = argv[1:]
+    return opts
+
 def build_call_string(argv):
     if len(argv) < 1:
-        print 'use defaults'
+        print 'No arguments given. Using files from ' + data_path
+        return 'python src/main.py -train ' + handle_spaces(default_training_path) + ' -test ' + handle_spaces(default_testing_path)
+    else:
+        print argv
+        
+
 # Install libraries that are not part of Python's standard library
 install_libraries()
 
 # Build string to call main script with
 call_string = build_call_string(sys.argv[1:])
 
-# def get_args(argv):
-#     '''
-#     Get options from command line input.
-#     '''
-#     opts = {}
-#     while argv:
-#         if argv[0][0] == '-':
-#             opts[argv[0]] = argv[1]
-#         argv = argv[1:]
-#     return opts
-
-
-# def build_call_string():
-#     if len(sys.argv) == 1:
-#         return 'python src/main.py -train ' + default_training + ' -test ' + default_testing
-#     # myargs = get_args(sys.argv[1:])
-
-# print call_string
-
-# Call 
+# Execute ID3 decision tree program
+os.system(call_string)
