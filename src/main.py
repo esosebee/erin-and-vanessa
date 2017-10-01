@@ -1,22 +1,15 @@
-import csv, os
+import csv
+import os, subprocess, sys
 import get_data
 import information_gain as infogain
 
 from build_tree import Tree
 from build_tree import Node
 
-import chi_square_test as chi 
-
 # Debugging flags
 DEBUG = False
 PRINT_TREE = False
-
-#########################
-# File path information #
-#########################
-os.chdir('..')
-path = os.getcwd()
-data_path = os.path.join(path, 'Data')
+PRUNE = True
 
 ###############################
 # Node printing for debugging #
@@ -54,27 +47,15 @@ def classify(test_data, node):
     if node.children is None:
         return test_data['id'],node.decision
 
-    # What is the dedicing feature in node? Which child of node has deciding
-    # feature value that matches the value of that same deciding feature in node?
-    #
-    # The deciding feature in node is node.node_feature or
-    # node.feature_value, I don't know which.
     else: 
-        print "node.node_feature_value", node.node_feature_value
-        print "node.node_feature", node.node_feature
-    
-    
         # Find the child that has value of node.feature_value (node.node_feature_value is a key,
         # like 'altitude')
-    
         no_such_kid = True
         child_to_traverse = None
         for child in node.children:
             # Check which of the children has value of deciding feature matching
             # the node.  Call classify on that child.
             # If there is no such node, behave the same as in the leaf case.
-            print "test_data[node.node_feature]" , test_data[node.node_feature],\
-                 "child.node_feature_value", child.node_feature_value
             if test_data[node.node_feature] ==  child.node_feature_value:
                 no_such_kid = False
                 child_to_traverse = child
@@ -97,43 +78,74 @@ def write_to_csv(headers, data):
             writer.writerow(d)
         f.close()
 
-def test_dataset():
-    item1 = {'altitude': 'high', 'direction': 'north', 'boundary': 'no'}
-    item2 = {'altitude': 'high', 'direction': 'north', 'boundary': 'no'}    
-    item3 = {'altitude': 'high', 'direction': 'south', 'boundary': 'no'}
-    item4 = {'altitude': 'high', 'direction': 'south', 'boundary': 'no'}
-    item5 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
-    item6 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
-    item7 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
-    item8 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
-    item9 = {'altitude': 'low', 'direction': 'south', 'boundary': 'no'}
-    item10 = {'altitude': 'low', 'direction': 'north', 'boundary': 'yes'}
+    # Tell user where file is saved
+    path = os.getcwd()
+    dest_path = os.path.join(path, filename)
+    print 'Predictions file ' + filename + ' saved at: '
+    print dest_path
 
-    testitem1 = {'altitude': 'high', 'direction': 'north'}
-    testitem2 = {'altitude': 'low', 'direction': 'north'}
-    testitem3 = {'altitude': 'low', 'direction': 'north'}
-    
-    data_set = [item1, item2, item3, item4, item5, item6, item7,
-                item8, item9, item10]
-    test_data_set = [testitem1, testitem2, testitem3]
+##############################
+# Command line input parsing #
+##############################
 
-    attribute_keys = [ 'altitude', 'direction']
-    target_attr = 'boundary'
+def print_usage():
+    '''
+    Usage statement for this program.
+    '''
+    print 'USAGE: python main.py -train path/to/training_file.csv -test path/to/testing_file.csv'
 
-    root_node = Node(data_set, attribute_keys, target_attr, None, None, None, None, None, False, None, 0)
-    dtree = Tree(root_node)
-    if PRINT_TREE: print_tree(root_node, 0)
+def parse_args(args):
+    '''
+    If command line input is valid, then parses the args and 
+    gets the necessary information from them. Otherwise, displays
+    a usage statement and exits the program.
+    '''
+    if '-train' in args and '-test' in args:
+        training_filename = args['-train']
+        testing_filename = args['-test']
+        return training_filename, testing_filename
+    else:
+        print_usage()
+        sys.exit(0)
+
+def get_args(argv):
+    '''
+    Get options from command line input.
+    '''
+    opts = {}
+    while argv:
+        if argv[0][0] == '-':
+            opts[argv[0]] = argv[1]
+        argv = argv[1:]
+    return opts
+
+def install_libraries():
+    '''
+    Install libraries that are not part of Python's standard library.
+    '''
+    subprocess.call(['pip', 'install', 'scipy'])
 
 if __name__ == '__main__':
-    # Test algorithm on small dataset from class
-    if DEBUG:
-        test_dataset()
+    # Install needed libraries
+    install_libraries()
 
-    training_filename = 'training.csv'
-    testing_filename = 'testing.csv'
+    # Default file names and paths if no arguments are given 
+    os.chdir('..')
+    path = os.getcwd()
+    data_path = os.path.join(path, 'Data')
+    default_training_path = os.path.join(data_path, 'training.csv')
+    default_testing_path = os.path.join(data_path, 'testing.csv')
 
-    training_data = get_data.load_dataset(training_filename, data_path)
-    testing_data = get_data.load_dataset(testing_filename, data_path)
+    # Parse command line args
+    if len(sys.argv[1:]) < 1:
+        training_filename = default_training_path
+        testing_filename = default_testing_path
+    else:
+        myargs = get_args(sys.argv[1:])
+        training_filename, testing_filename = parse_args(myargs) # Get filenames
+    
+    training_data = get_data.load_dataset(training_filename)
+    testing_data = get_data.load_dataset(testing_filename)
 
     # Get attributes for training data
     training_attributes_list = []
@@ -148,6 +160,16 @@ if __name__ == '__main__':
     if PRINT_TREE:
         print_tree(root_node, 0)
 
+    if PRUNE:
+        leaf_list = []
+        leaf_list = root_node.find_leaves( leaf_list)
+        original_leaf_count = len(leaf_list)
+        prune_level = 0.0001
+        pruned_root = root_node.prune(leaf_list, 'boundary', prune_level)
+        pruned_leaf_list = []
+        pruned_leaf_list = pruned_root.find_leaves(pruned_leaf_list)
+        pruned_leaf_count = len(pruned_leaf_list)
+
     # Get attributes for test data
     testing_attributes_list = []
     for t in testing_data:
@@ -157,9 +179,6 @@ if __name__ == '__main__':
     predictions = []
     for t in testing_attributes_list:
         predictions.append(classify(t, root_node))
-    
-    for p in predictions:
-        print p
 
     # Write predictions to file 
     headers = ['id','class']

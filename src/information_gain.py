@@ -160,26 +160,6 @@ def select_attribute(training_set, features, target_feature, gain_type):
                 basline_score = gi 
                 best_feature = f 
     return best_feature 
-
-def main():
-    print("Information gain of little data set")
-
-    item1 = {'grade': 'steep', 'bumpiness':  'bumpy', 'speedlimit': 'yes', 'boundary': 'slow'}
-    item2 = {'grade': 'steep', 'bumpiness':  'smooth', 'speedlimit': 'yes', 'boundary': 'slow'}
-    item3 = {'grade': 'flat', 'bumpiness':  'bumpy', 'speedlimit': 'no', 'boundary': 'fast'}
-    item4 = {'grade': 'steep', 'bumpiness':  'smooth', 'speedlimit': 'no', 'boundary': 'fast'}
-
-    data_set = [item1, item2, item3, item4]
-
-    print('entropy of data_set is', entropy(data_set, 'boundary'))
-    
-    gain_result = gain(data_set, 'grade', 'boundary')
-    print (gain_result)
-    print(select_attribute(data_set, {'grade', 'bumpy', 'speedlimit'}, 'boundary'))    
-
-if __name__ == '__main__':
-    main()
-
            
 
     
