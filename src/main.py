@@ -9,6 +9,7 @@ from build_tree import Node
 # Debugging flags
 DEBUG = False
 PRINT_TREE = False
+PRUNE = True
 
 ###############################
 # Node printing for debugging #
@@ -46,11 +47,6 @@ def classify(test_data, node):
     if node.children is None:
         return test_data['id'],node.decision
 
-    # What is the dedicing feature in node? Which child of node has deciding
-    # feature value that matches the value of that same deciding feature in node?
-    #
-    # The deciding feature in node is node.node_feature or
-    # node.feature_value, I don't know which.
     else: 
         # Find the child that has value of node.feature_value (node.node_feature_value is a key,
         # like 'altitude')
@@ -163,6 +159,16 @@ if __name__ == '__main__':
     dtree = Tree(root_node)
     if PRINT_TREE:
         print_tree(root_node, 0)
+
+    if PRUNE:
+        leaf_list = []
+        leaf_list = root_node.find_leaves( leaf_list)
+        original_leaf_count = len(leaf_list)
+        prune_level = 0.0001
+        pruned_root = root_node.prune(leaf_list, 'boundary', prune_level)
+        pruned_leaf_list = []
+        pruned_leaf_list = pruned_root.find_leaves(pruned_leaf_list)
+        pruned_leaf_count = len(pruned_leaf_list)
 
     # Get attributes for test data
     testing_attributes_list = []

@@ -98,11 +98,10 @@ class Node:
         # Get node's children
         self.add_children(dataset, best_feature, best_feature_values, child_remaining_attribute_keys, target_attr, depth)
 
-
-
-    # Finds and returns all the leaves of the given tree. 
     def find_leaves(self,  leaf_list):
-
+        '''
+        Finds and returns all the leaves of the given tree.
+        '''
         # If you have no parent, you're the root. Initialize the leaf list.
         if self.parent == None:
             leaf_list = []
@@ -110,41 +109,33 @@ class Node:
         # If you have no children, you're a leaf.  Add your self to the leaf
         # set and return. 
         if self.is_leaf == True:
-            #print "I'm a leaf: ", self.node_feature_value, self.decision
             leaf_list.append(self)
-            #print "A:length of leaf_set" , len(leaf_set)
             return(leaf_list)
         # Otherwise, recurse through your children. 
         else:
-            #print "Looking through children."
             for child in self.children:
-                #print "B:length of leaf_set", len(leaf_set)
-                #leaf_set.append( child.find_leaves( leaf_set) )
                 leaf_list = child.find_leaves(leaf_list)
                 
         return(leaf_list)
-
-
-    # Count how many items from dataset have value value for the target_attribute.
+ 
     def get_count(this, dataset, target_attribute, value):
-
+        '''
+        Count how many items from dataset have value value for the target_attribute.
+        '''
         count = 0
         for d in dataset:
             if d[target_attribute] == value:
                 count += 1
 
         return count
-        
-    # Based on the chi squared value, prune the tree.  Returns the pruned tree.
     
     def prune(this, leaf_list, target_attribute, significance_level):
-
+        '''
+        Based on the chi squared value, prune the tree.  Returns the pruned tree.
+        '''
         #Step throught the leaf_list, deciding whether to prune the current leaf and its
         # siblings. 
-
         while (len(leaf_list)) > 1:
-            
-
             # Pick the leaf with the greatest depth.
             max_leaf_depth = 0
             candidate_leaf = leaf_list[0]
@@ -152,13 +143,10 @@ class Node:
                 if leaf.depth > max_leaf_depth:
                     candiate_leaf = leaf
                     max_leaf_depth = leaf.depth
-                    
             leaf = candidate_leaf
             
-            ''' Find the parent of the leaf
-             Compute the experimental probabilities of each target_attribute
-            '''
-
+            # Find the parent of the leaf. Compute the experimental probabilities 
+            # of each target_attribute
             leaf_parent = leaf.parent
 
             ''' Based on the distribution of the parent data, compute the probability
@@ -166,33 +154,16 @@ class Node:
             as a dictionary with the keys the value of the target_attribute because
             some values of the target attribute may be missing. '''
             
-            ''' Now, for each child of leaf_parent, compute the count of values for each
-            value of the target attribute.'''
-
-        
+            # Now, for each child of leaf_parent, compute the count of values for each
+            # value of the target attribute.
             total_target_attributes = infogain.find_unique_values(this.dataset, target_attribute) 
             number_of_leaves = len(leaf_parent.children)
            
-            
             degrees_freedom = (len(total_target_attributes) - 1)*(number_of_leaves - 1)
         
             for child in leaf_parent.children:
-                
-                # If child is a leaf already, we don't need to test for pruning it.
-                # I'M NOT SURE ABOUT THIS.  I think it's right. 
-                '''if (child.is_leaf):
-                    print child.node_feature_value, "is a leaf, so we ain't pruning it"
-                    leaf_list.remove(child)
-                    #print "data set for OTHERSIDE"
-                    #print child.dataset
-                    
-                else:'''
-                c = 0
-          
-                
+                c = 0      
                 for val in list(infogain.find_values_of_attribute(leaf_parent.dataset, child.node_feature)):
-                    # CHECK THE leaf.get_count thing.  This may be wrong
-                
                     for decision in total_target_attributes:
                         leaf_probs = vchi2.compute_probs_with_keys(child.dataset, target_attribute)
                         
@@ -200,8 +171,7 @@ class Node:
                         actual_count = leaf.get_count(some_slice, child.node_feature, val)
                         
                     
-                        # We want the slice of child.dataset for val.
-                       
+                        # We want the slice of child.dataset for val
                         slice_of_data = infogain.slice_of_data(child.dataset, child.node_feature, val)
                         if decision in leaf_probs: 
                             expected_count = len(slice_of_data) * leaf_probs[decision]
@@ -212,11 +182,16 @@ class Node:
                             c = c + ( ((actual_count - expected_count)**2) / expected_count)
 
             # The null hypothesis is that the split was due to randome chance.
-            
             our_chi2 = chi2.sf(c, degrees_freedom)
-        
 
-            if (our_chi2 <= significance_level):
+            # In either case, take all the children of this leaf's parent
+            # out of leaf_list.
+            old_leaf_list = leaf_list[:]
+            for kid in leaf_parent.children:
+                if kid in leaf_list: 
+                    leaf_list.remove(kid)
+
+            if (our_chi2 >+ significance_level):
                 # We accept the null hypothesis.   The split is due to chance.  Ditch the children of this parent. 
                 #need_to_prune = True
                 leaf_parent.isleaf = True
@@ -224,24 +199,15 @@ class Node:
                 # This node is now a leaf, so add it in to the leaf_list
                 if leaf_parent.parent != None:
                     leaf_list.append(leaf_parent)
-            
             else:
                 # We reject the null hypothesis. 
                 need_to_prune = False
             
-            # In either case, take all the children of this leaf's parent
-            # out of leaf_list.
-
-            for kid in leaf_parent.children:
-                if kid in leaf_list: 
-                    leaf_list.remove(kid)
+            if  len(old_leaf_list) == len(leaf_list):
+                # See if there is any change in the leaf list.  If not, we're done
+                if set(old_leaf_list) == set(leaf_list):
+                    # No change in the leaf_list.  Return
+                    return this
 
         # Return the pruned tree.
         return this
-        
-            
-        
-
-
-
-
