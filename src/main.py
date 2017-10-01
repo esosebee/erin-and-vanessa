@@ -1,5 +1,5 @@
 import csv
-import os, sys
+import os, subprocess, sys
 import get_data
 import information_gain as infogain
 
@@ -82,6 +82,12 @@ def write_to_csv(headers, data):
             writer.writerow(d)
         f.close()
 
+    # Tell user where file is saved
+    path = os.getcwd()
+    dest_path = os.path.join(path, filename)
+    print 'Predictions file ' + filename + ' saved at: '
+    print dest_path
+
 ##############################
 # Command line input parsing #
 ##############################
@@ -90,7 +96,7 @@ def print_usage():
     '''
     Usage statement for this program.
     '''
-    print 'USAGE: python main.py -train dir/to/training_file.csv -test dir/to/testing_file.csv'
+    print 'USAGE: python main.py -train path/to/training_file.csv -test path/to/testing_file.csv'
 
 def parse_args(args):
     '''
@@ -117,7 +123,16 @@ def get_args(argv):
         argv = argv[1:]
     return opts
 
+def install_libraries():
+    '''
+    Install libraries that are not part of Python's standard library.
+    '''
+    subprocess.call(['pip', 'install', 'scipy'])
+
 if __name__ == '__main__':
+    # Install needed libraries
+    install_libraries()
+
     # Parse command line args
     myargs = get_args(sys.argv[1:])
     training_filename, testing_filename = parse_args(myargs) # Get filenames
