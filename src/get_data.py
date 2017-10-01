@@ -92,8 +92,8 @@ def get_training_attributes(data):
         sequence = random_replacement(sequence)
   
     attributes = {}
-    attributes['id'] = seq_id
-    attributes['sequence'] = sequence
+    # attributes['id'] = seq_id
+    # attributes['sequence'] = sequence
     attributes['boundary'] = boundary
     attributes.update(get_letters_index(sequence, range(0, len(sequence)), 1))
     # attributes.update(get_letters_index(sequence, range(0, len(sequence)), 2))
@@ -122,14 +122,22 @@ def get_testing_attributes(data):
 ########################
 # Load data  from file #
 ########################
-def load_dataset(filename, data_path):
+def load_dataset(filepath):
     '''
-    Loads dataset from CSV file into a list.
+    Load dataset from CSV file into a list.
     '''
-    filepath = os.path.join(data_path, filename)
     with open(filepath) as f:
         reader = csv.reader(f)
         dataset = list(reader)
     return dataset
+# def load_dataset(filename, data_path):
+#     '''
+#     Loads dataset from CSV file into a list.
+#     '''
+#     filepath = os.path.join(data_path, filename)
+#     with open(filepath) as f:
+#         reader = csv.reader(f)
+#         dataset = list(reader)
+#     return dataset
 
 
